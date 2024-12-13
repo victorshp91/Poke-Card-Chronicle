@@ -8,7 +8,7 @@
 
 import Combine
 import SwiftUI
-
+import CoreData
 class CardViewModel: ObservableObject {
     @Published var cards: [Card] = [] // Estado compartido para las cartas
     @Published var selectedSet: Set? = nil // Estado compartido para el set seleccionado
@@ -17,11 +17,16 @@ class CardViewModel: ObservableObject {
     @Published var isLoadingSet: Bool = true
      let cardsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_cards.json")!
      let setsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_set.json")!
+    
+  
    
     init() {
+       
         fetchSets()
         fetchCards()
     }
+    
+    
      func fetchCards() {
         URLSession.shared.dataTask(with: cardsJsonURL) { data, response, error in
             if let data = data {
@@ -62,9 +67,23 @@ class CardViewModel: ObservableObject {
         }.resume()
     }
     
+   
      
 }
 
 func getSetLogoURL(for setID: String) -> URL? {
    URL(string: "https://images.pokemontcg.io/\(setID)/logo.png")
+}
+
+func fetchEntryCount(for cardId: String, in context: NSManagedObjectContext) -> Int {
+    let fetchRequest: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
+    fetchRequest.predicate = NSPredicate(format: "cardId == %@", cardId)
+    
+    do {
+        let count = try context.count(for: fetchRequest)
+        return count
+    } catch {
+        print("Failed to fetch entry count: \(error)")
+        return 0
+    }
 }

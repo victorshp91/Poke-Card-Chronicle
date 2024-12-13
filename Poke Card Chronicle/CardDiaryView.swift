@@ -1,12 +1,6 @@
-//
-//  CardDiaryView.swift
-//  Poke Card Chronicle
-//
-//  Created by Victor Saint Hilaire on 12/12/24.
-//
-
 import SwiftUI
 import SDWebImageSwiftUI
+
 struct CardDiaryView: View {
     
     let card: Card
@@ -14,28 +8,41 @@ struct CardDiaryView: View {
     let setName: String
     @State private var isShowingAddEntrySheet = false // Controla la presentación del sheet
     
+    @FetchRequest var entries: FetchedResults<DiaryEntry>
+
+        init(card: Card, setName: String, setId: String) {
+            self.card = card
+            self.setName = setName
+            self.setId = setId
+
+            // Configuramos el @FetchRequest aquí
+            _entries = FetchRequest(
+                entity: DiaryEntry.entity(),
+                sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.entryDate, ascending: true)],
+                predicate: NSPredicate(format: "cardId == %@", card.id)
+            )
+        }
+  
+    
     var body: some View {
         ScrollView {
-            VStack(spacing: 20){
-                ForEach(0...10, id: \.self) { _ in
+            VStack(spacing: 20) {
+                ForEach(entries, id: \.id) { entry in
                     EntryCard(
-                        entryTitle: "Pikachu's Journey",
-                        entryDate: Date(),
-                        entryText: "Caught Pikachu in Viridian Forest. It was an exciting day with a lot of adventure.",
+                        entry: entry,
                         card: card
                     )
                 }
-            }.padding(.top, 225)
-                .padding(.bottom, 75)
+            }
+            .padding(.top, 225)
+            .padding(.bottom, 75)
             .frame(maxWidth: .infinity)
-        }            .overlay(
-            HeaderView(card: card, setId: setId, setName: setName),
+        }
+        .overlay(
+            HeaderView(card: card, setId: setId, setName: setName, totalEntry: entries.count),
             alignment: .top
-
         )
-
-        
-        .navigationTitle("Card Diary") // Título del NavigationBar
+        .navigationTitle("Card Diary")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
@@ -47,23 +54,18 @@ struct CardDiaryView: View {
             }
         }
         .sheet(isPresented: $isShowingAddEntrySheet) {
-            CardEntryView(card: card, setName: setName)
+            NavigationStack {
+                CardEntryView(card: card, setName: setName)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
         }
     }
 }
 
-#Preview {
-    CardDiaryView(card: Card(id: "1", name: "PIKACHU", small_image_url: "", large_image_url: "https://images.pokemontcg.io/sm1/5_hires.png", set_name: "Base Set"), setId: "pop3", setName: "150 mabajeo")
-}
-
-
-
 struct EntryCard: View {
-    let entryTitle: String
-    let entryDate: Date
-    let entryText: String
+    let entry: DiaryEntry
     let card: Card
-    @State private var showFullEntry: Bool = false // State to toggle full entry view
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -78,16 +80,15 @@ struct EntryCard: View {
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
                 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(entryTitle)
+                    Text(entry.entryTitle ?? "No Title")
                         .font(.headline)
                         .bold()
                     
-                    Text(entryDate, style: .date)
+                    Text(entry.entryDate ?? Date(), style: .date)
                         .font(.subheadline)
                         .foregroundColor(.gray)
                 }
                 Spacer()
-                // Icono de configuración o acción
                 Button(action: {
                     print("More options tapped")
                 }) {
@@ -98,7 +99,7 @@ struct EntryCard: View {
             }
             
             // Contenido de la entrada
-            Text(entryText)
+            Text(entry.entryText ?? "No Text")
                 .font(.body)
                 .foregroundColor(.primary)
                 .lineLimit(4)
@@ -106,14 +107,6 @@ struct EntryCard: View {
             
             // Pie de la entrada con el botón "Read More"
             HStack(spacing: 10) {
-           
-                Button(action: {
-                    print("Favorite tapped")
-                }) {
-                    Image(systemName: "star")
-                        .foregroundColor(.yellow)
-                        .font(.title2)
-                }
                 Button(action: {
                     print("Share tapped")
                 }) {
@@ -123,7 +116,7 @@ struct EntryCard: View {
                 }
                 Spacer()
                 Button(action: {
-                    showFullEntry.toggle() // Toggle to show full entry
+                    // Implement read more
                 }) {
                     Text("Read More")
                         .font(.callout)
@@ -138,80 +131,59 @@ struct EntryCard: View {
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
         .padding(.horizontal)
-        .sheet(isPresented: $showFullEntry) {
-            //FullEntryView(entryTitle: entryTitle, entryDate: entryDate, entryText: entryText, card: card)
-        }
     }
 }
 
-
 struct HeaderView: View {
-    
-    
     let card: Card
     let setId: String
     let setName: String
-    @State private var animateCardImage: Bool = false // Animation state for card image
+    let totalEntry: Int
+    @State private var animateCardImage: Bool = false
+    
     var body: some View {
-        HStack(alignment:. top, spacing: 10){
-            WebImage(url: URL(string: card.large_image_url))
-            { image in
-                image
-            }placeholder: {
-                WebImage(url: URL(string: card.small_image_url))
-                    .resizable()
-                    .scaledToFit()
-            }
-            .resizable()
-            .scaledToFit()
-            .frame(height: 150) // Larger image
-            .cornerRadius(15)
-            .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 2)
-            
-            .opacity(animateCardImage ? 1 : 0)
-            .scaleEffect(animateCardImage ? 1 : 0.7)
-            .animation(Animation.easeInOut(duration: 0.3), value: animateCardImage)
-            .onAppear {
-                animateCardImage = true
-            }
-            VStack(alignment: .leading){
-                Text("\(card.name)'s Journey")
+        HStack(alignment: .top, spacing: 10) {
+            WebImage(url: URL(string: card.small_image_url))
+                .resizable()
+                .scaledToFit()
+                .frame(height: 150) // Larger image
+                .cornerRadius(15)
+                .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 2)
+                .opacity(animateCardImage ? 1 : 0)
+                .scaleEffect(animateCardImage ? 1 : 0.7)
+                .animation(Animation.easeInOut(duration: 0.3), value: animateCardImage)
+                .onAppear {
+                    animateCardImage = true
+                }
+            VStack(alignment: .leading) {
+                Text(card.name)
                     .font(.title2).bold()
                     .multilineTextAlignment(.leading)
                 Text(setName)
                 Spacer()
-                HStack(alignment: .bottom, spacing: 10){
-                    WebImage(url: getSetLogoURL(for: setId)) { phase in
-                        if let image = phase.image {
-                            image.resizable()
-                                .scaledToFit()
-                                .frame(width: 125)
-                            
-                            
-                                .transition(.scale)
-                        } else {
-                            ProgressView()
-                                .frame(width: 150, height: 200)
-                        }
-                    }
+                HStack(alignment: .bottom, spacing: 10) {
+                    WebImage(url: getSetLogoURL(for: setId))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 125)
+                        .transition(.scale)
                     Spacer()
                     Image(systemName: "book")
-                    Text("5")
+                    Text("\(totalEntry)")
                 }.bold()
-                
             }
-            
             Spacer()
-        }.padding()
-            .frame(height: 175)
-            .background(.ultraThinMaterial)
-            .cornerRadius(35)
-            .shadow(
-                color: Color.black.opacity(0.15),
-                radius: 10,
-                x: 0,
-                y: 5
-            )
-            .padding()
+        }
+        .padding()
+        .frame(height: 175)
+        .background(.ultraThinMaterial)
+        .cornerRadius(35)
+        .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
+        .padding()
     }
+}
+
+
+#Preview {
+    CardDiaryView(card: Card(id: "1", name: "PIKACHU", small_image_url: "", large_image_url: "https://images.pokemontcg.io/sm1/5_hires.png", set_name: "Base Set"), setName: "150 mabajeo", setId: "pop3")
 }

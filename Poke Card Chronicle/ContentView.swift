@@ -19,14 +19,14 @@ struct ContentView: View {
                 
 
                 
-                    Text("MMG")
+                    Text("VIEW")
                         .opacity(selectedTab == .notifications ? 1 : 0)
                         .scaleEffect(selectedTab == .notifications ? 1 : 0.9)
                         .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
                 
 
                 
-                    Text("MMG")
+                    Text("VIEW")
                         .opacity(selectedTab == .favorites ? 1 : 0)
                         .scaleEffect(selectedTab == .favorites ? 1 : 0.9)
                         .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
