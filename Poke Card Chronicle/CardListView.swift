@@ -25,15 +25,13 @@ struct CardListView: View {
 
     
     @StateObject var viewModel: CardViewModel
-    
+    @State private var isSetBarVisible: Bool = true // Controla la visibilidad del SetBar
     @State private var selectedSet: Set? = nil
     @State private var searchText: String = ""
     @State private var isSearchBarPresented: Bool = false
 
 
-    private func getSetLogoURL(for setID: String) -> URL? {
-        URL(string: "https://images.pokemontcg.io/\(setID)/logo.png")
-    }
+  
 
     private var filteredCards: [Card] {
         viewModel.cards.filter {
@@ -55,7 +53,7 @@ struct CardListView: View {
                     
                     LazyVGrid(columns: [GridItem(), GridItem()], spacing: 20) {
                                             ForEach(filteredCards) { card in
-                                                NavigationLink(destination: CardEntryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name))) { // Pasando el nombre del conjunto correspondiente
+                                                NavigationLink(destination: CardDiaryView(card: card, setId: card.set_name, setName: setName(from: viewModel.sets , for: card.set_name))) { // Pasando el nombre del conjunto correspondiente
                                                     CardView(card: card, sets: viewModel.sets)
                                                     
                                                 }
@@ -65,14 +63,14 @@ struct CardListView: View {
                     .padding(.horizontal)
                     .padding(.top, 100)
                 }
-            }
+            }.scrollDismissesKeyboard(.immediately)
                     
                     .navigationBarTitle("Cards", displayMode: .inline)
                     .navigationBarItems(
                         leading: Text("\(filteredCards.count)")
                             .font(.headline)
                             .foregroundColor(.gray),
-                        trailing: Button(action: { withAnimation { isSearchBarPresented.toggle() } }) {
+                        trailing: Button(action: { withAnimation { isSearchBarPresented =  true } }) {
                             Image(systemName: "magnifyingglass")
                         }
                     )
@@ -84,36 +82,60 @@ struct CardListView: View {
                         alignment: .top
                     )
                     .overlay(
-                        isSearchBarPresented && !viewModel.cards.isEmpty ? nil :
-                        HStack {
-                            Picker("Select Set", selection: $selectedSet) {
-                                Text("All").tag(nil as Set?)
-                                ForEach(viewModel.sets) { set in
-                                    Text(set.name).tag(set as Set?)
+                        !viewModel.isLoading &&  !viewModel.isLoadingSet && isSearchBarPresented ? nil :
+                            HStack {
+                                
+                                // Botón para alternar visibilidad
+                                Button(action: {
+                                    withAnimation {
+                                        isSetBarVisible.toggle() // Cambiar el estado
+                                    }
+                                }) {
+                                    Image(systemName: isSetBarVisible ? "chevron.right" : "chevron.left")
+                                        
+                                        .font(.title2)
+                                        .foregroundColor(.blue)
                                 }
-                            }
-                            .pickerStyle(MenuPickerStyle())
-                            Spacer()
-                            WebImage(url: selectedSet != nil ? getSetLogoURL(for: selectedSet!.id) : URL(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Pokémon_Trading_Card_Game_logo.svg/2560px-Pokémon_Trading_Card_Game_logo.svg.png")) { phase in
-                                if let image = phase.image {
-                                    image.resizable()
-                                        .scaledToFit()
-                                        .frame(maxHeight: 50)
-                                } else if phase.error != nil {
-                                    Color.red
-                                } else {
-                                    ProgressView()
-                                }
-                            }
-                        }
-                        .padding(10)
-                        .background(.ultraThinMaterial)
-                        .frame(height: 75)
-                        .cornerRadius(15)
-                        .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
-                        .padding(10),
-                        alignment: .top
-                    )
+                                 if isSetBarVisible {
+                                     // Contenido del SetBar (Picker y WebImage)
+                                     Picker("Select Set", selection: $selectedSet) {
+                                         Text("All").tag(nil as Set?)
+                                         ForEach(viewModel.sets) { set in
+                                             Text(set.name).tag(set as Set?)
+                                         }
+                                     }
+                                     .pickerStyle(MenuPickerStyle())
+                                 }
+
+                                 Spacer()
+
+                                 // WebImage siempre visible
+                                 WebImage(url: selectedSet != nil ? getSetLogoURL(for: selectedSet!.id) : URL(string: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Pokémon_Trading_Card_Game_logo.svg/2560px-Pokémon_Trading_Card_Game_logo.svg.png")) { phase in
+                                     if let image = phase.image {
+                                         image.resizable()
+                                             .scaledToFit()
+                                             .frame(maxHeight: 50)
+                                     } else if phase.error != nil {
+                                         Color.red
+                                     } else {
+                                         ProgressView()
+                                     }
+                                 }
+                                 
+
+                                
+                                
+                             }
+                             .padding(10)
+                             .background(.ultraThinMaterial)
+                             .frame(height: 75)
+                             .frame(maxWidth: isSetBarVisible ? .infinity:150)
+                             .cornerRadius(15)
+                             .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
+                             .padding(10)
+                             
+                             .animation(.easeInOut, value: isSetBarVisible),
+                             alignment: .top)
                 
             
             
@@ -123,27 +145,33 @@ struct CardListView: View {
 
 
 
-struct SearchBarView: View {
-    @Binding var text: String
-    @Binding var isPresented: Bool
+    struct SearchBarView: View {
+        @Binding var text: String
+        @Binding var isPresented: Bool
+        @FocusState private var isTextFieldFocused: Bool
 
-    var body: some View {
-        HStack {
-            TextField("Search cards...", text: $text)
-            Button(action: { withAnimation { isPresented = false; text = "" } }) {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundColor(.gray)
+        var body: some View {
+            HStack {
+                TextField("Search cards...", text: $text)
+                    .focused($isTextFieldFocused)
+                    .onChange(of: isPresented) {
+                        isTextFieldFocused = isPresented
+                    }
+                Button(action: { withAnimation { isPresented = false; text = ""; isTextFieldFocused = false } }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+                .padding(.trailing, 8)
             }
-            .padding(.trailing, 8)
+            .padding(10)
+            .frame(height: 75)
+            .background(.ultraThinMaterial)
+            .cornerRadius(15)
+            .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
+            .padding(10)
+            
         }
-        .padding(10)
-        .frame(height: 75)
-        .background(.ultraThinMaterial)
-        .cornerRadius(15)
-        .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
-        .padding(10)
     }
-}
 
     struct CardView: View {
         let card: Card
@@ -152,21 +180,25 @@ struct SearchBarView: View {
         
         var body: some View {
             VStack {
-                WebImage(url: URL(string: card.small_image_url)) { phase in
-                    if let image = phase.image {
-                        image.resizable()
-                            .scaledToFit()
+                WebImage(url: URL(string: card.small_image_url))
+                { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
                             .frame(maxWidth: .infinity)
                             .cornerRadius(15)
                             .shadow(color: .gray.opacity(0.4), radius: 6, x: 0, y: 4)
                             .transition(.scale)
-                    } else {
-                        ProgressView()
-                            .frame(width: 150, height: 200)
-                    }
+                }placeholder: {
+                    WebImage(url: URL(string: card.large_image_url))
+                        .resizable()
+                        .scaledToFit()
                 }
+                
+                
+                
                 Text(card.name)
-                    .font(.caption)
+                    .font(.caption).bold()
                     .foregroundColor(.black)
                     .padding(.top, 4)
                     .frame(maxWidth: 150)

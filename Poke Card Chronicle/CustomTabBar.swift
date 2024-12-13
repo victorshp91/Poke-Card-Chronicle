@@ -21,10 +21,12 @@ struct CustomTabBar: View {
                             .padding()
                         
                     }
-                    Image(systemName: isCollapsed ? "chevron.right" : "chevron.left")
-                        .font(.system(size: 20))
-                        .foregroundColor(.blue)
-                        .padding()
+                    if !isCollapsed {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 20))
+                            .foregroundColor(.blue)
+                            .padding()
+                    }
                 }
 
                 // Contenido de las pestañas
@@ -83,7 +85,7 @@ enum Tab: String, CaseIterable {
      //   case .home: return "plus.circle"
         case .cards: return "greetingcard"
         case .notifications: return "book"
-        case .favorites: return "heart"
+        case .favorites: return "star"
         }
     }
 }

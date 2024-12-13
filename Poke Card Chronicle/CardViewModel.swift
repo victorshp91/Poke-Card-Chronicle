@@ -14,6 +14,7 @@ class CardViewModel: ObservableObject {
     @Published var selectedSet: Set? = nil // Estado compartido para el set seleccionado
     @Published  var sets: [Set] = []
     @Published  var isLoading: Bool = true
+    @Published var isLoadingSet: Bool = true
      let cardsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_cards.json")!
      let setsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_set.json")!
    
@@ -49,6 +50,7 @@ class CardViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         withAnimation {
                             self.sets = decodedResponse.reversed()
+                            self.isLoadingSet = false
                         }
                     }
                 } catch {
@@ -59,5 +61,10 @@ class CardViewModel: ObservableObject {
             }
         }.resume()
     }
+    
+     
 }
 
+func getSetLogoURL(for setID: String) -> URL? {
+   URL(string: "https://images.pokemontcg.io/\(setID)/logo.png")
+}
