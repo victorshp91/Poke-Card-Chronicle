@@ -68,14 +68,14 @@ struct CustomTabBar: View {
 enum Tab: String, CaseIterable {
   //  case home
     case cards
-    case notifications
+    case allEntries
     case favorites
 
     var title: String {
         switch self {
      //   case .home: return "Add"
         case .cards: return "Cards"
-        case .notifications: return "Diary"
+        case .allEntries: return "All Entries"
         case .favorites: return "Favorites"
         }
     }
@@ -84,7 +84,7 @@ enum Tab: String, CaseIterable {
         switch self {
      //   case .home: return "plus.circle"
         case .cards: return "greetingcard"
-        case .notifications: return "book"
+        case .allEntries: return "book"
         case .favorites: return "star"
         }
     }

@@ -18,11 +18,13 @@ struct ContentView: View {
                         .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
                 
 
-                
-                    Text("VIEW")
-                        .opacity(selectedTab == .notifications ? 1 : 0)
-                        .scaleEffect(selectedTab == .notifications ? 1 : 0.9)
-                        .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
+            NavigationStack{
+                AllEntriesView(viewModel: viewModel)
+            }
+                    .opacity(selectedTab == .allEntries ? 1 : 0)
+                    .scaleEffect(selectedTab == .allEntries ? 1 : 0.9)
+                    .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
+            
                 
 
                 

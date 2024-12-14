@@ -87,3 +87,22 @@ func fetchEntryCount(for cardId: String, in context: NSManagedObjectContext) -> 
         return 0
     }
 }
+
+func deleteEntry(_ entry: DiaryEntry) {
+    // Si tienes relaciones específicas a manejar
+    if let images = entry.entryToImages as? Swift.Set<ImageEntry> {
+        for image in images {
+            PersistenceController.shared.container.viewContext.delete(image)
+        }
+    }
+    
+    // Luego eliminar la entrada principal
+    PersistenceController.shared.container.viewContext.delete(entry)
+        
+    do {
+        try PersistenceController.shared.container.viewContext.save()
+    } catch {
+        // Manejar errores aquí
+        print("Error al eliminar la entrada: \(error.localizedDescription)")
+    }
+}

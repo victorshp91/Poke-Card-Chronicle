@@ -52,7 +52,7 @@ struct CardEntryView: View {
             Section(header: Text("Diary Entry")) {
                 VStack(spacing: 10) {
                     TextEditor(text: $entryText)
-                        .frame(height: 100)
+                        .frame(height: 200)
                         .padding(5)
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(10)
@@ -160,7 +160,7 @@ struct CardEntryView: View {
         }
 
         // Asociar imágenes al nuevo Entry
-        newEntry.images = NSSet(array: imageEntries)
+        newEntry.entryToImages = NSSet(array: imageEntries)
 
         do {
             try context.save()

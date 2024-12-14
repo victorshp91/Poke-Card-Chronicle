@@ -6,11 +6,11 @@
         <attribute name="entryText" optional="YES" attributeType="String"/>
         <attribute name="entryTitle" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImageEntry" inverseName="entry" inverseEntity="ImageEntry"/>
+        <relationship name="entryToImages" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ImageEntry" inverseName="imagesToDiary" inverseEntity="ImageEntry"/>
     </entity>
     <entity name="ImageEntry" representedClassName="ImageEntry" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="image" optional="YES" attributeType="Binary"/>
-        <relationship name="entry" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DiaryEntry" inverseName="images" inverseEntity="DiaryEntry"/>
+        <relationship name="imagesToDiary" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DiaryEntry" inverseName="entryToImages" inverseEntity="DiaryEntry"/>
     </entity>
 </model>

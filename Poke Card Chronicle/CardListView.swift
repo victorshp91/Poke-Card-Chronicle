@@ -74,19 +74,23 @@ struct CardListView: View {
         
             .navigationBarTitle("Cards", displayMode: .inline)
             .navigationBarItems(
-                leading: HStack {
+                leading:
                     Text("\(filteredCards.count)")
                         .font(.headline)
                         .foregroundColor(.gray)
+                   
+                ,
+                trailing: HStack{
                     Button(action: {
                         showOnlyDiaryEntries.toggle()
                     }) {
                         Image(systemName: showOnlyDiaryEntries ? "book.fill" : "book")
                             .foregroundColor(.blue)
                     }
-                },
-                trailing: Button(action: { withAnimation { isSearchBarPresented = true } }) {
-                    Image(systemName: "magnifyingglass")
+                    Button(action: { withAnimation { isSearchBarPresented = true } }) {
+                        Image(systemName: "magnifyingglass")
+                    }
+                    
                 }
             )
             .overlay(

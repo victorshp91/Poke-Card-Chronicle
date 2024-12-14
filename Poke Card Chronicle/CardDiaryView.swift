@@ -18,7 +18,7 @@ struct CardDiaryView: View {
             // Configuramos el @FetchRequest aquí
             _entries = FetchRequest(
                 entity: DiaryEntry.entity(),
-                sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.entryDate, ascending: true)],
+                sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.entryDate, ascending: false)],
                 predicate: NSPredicate(format: "cardId == %@", card.id)
             )
         }
@@ -55,9 +55,11 @@ struct CardDiaryView: View {
         }
         .sheet(isPresented: $isShowingAddEntrySheet) {
             NavigationStack {
-                CardEntryView(card: card, setName: setName)
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
+               
+                    CardEntryView(card: card, setName: setName)
+                        .presentationDetents([.medium, .large])
+                        .presentationDragIndicator(.visible)
+                
             }
         }
     }
@@ -67,72 +69,163 @@ struct EntryCard: View {
     let entry: DiaryEntry
     let card: Card
     
+    @State private var animateImages: Bool = false
+    @State private var showDeleteAlert: Bool = false
+    @State private var showImageViewer: Bool = false
+    @State var selectedImage: Image?// Imagen seleccionada
+    @StateObject var renderImageVm: RenderImage = RenderImage()
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // Encabezado
-            HStack {
-                // Imagen de la carta
+        VStack(alignment: .leading, spacing: 10) {
+            
+            HStack(alignment: .top) {
                 WebImage(url: URL(string: card.small_image_url))
                     .resizable()
                     .scaledToFit()
                     .frame(width: 75, height: 75)
                     .cornerRadius(8)
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                    .offset(x: -12)
+                    .onTapGesture {
+                        if let uiImage = renderImageVm.downloadedImage {
+                            selectedImage = uiImage
+                            showImageViewer = true
+                            
+                        }
+                    }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text(entry.entryTitle ?? "No Title")
                         .font(.headline)
                         .bold()
-                    
+                    Text("\(card.name)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                     Text(entry.entryDate ?? Date(), style: .date)
                         .font(.subheadline)
-                        .foregroundColor(.gray)
+                        .foregroundColor(.secondary)
                 }
+                .offset(x: -12)
                 Spacer()
-                Button(action: {
-                    print("More options tapped")
-                }) {
+                Menu {
+                    Button(action: {
+                        showDeleteAlert = true
+                    }) {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    ShareLink("Share", item: renderImageVm.renderedImage, preview: SharePreview(Text("\(card.name)"), image: renderImageVm.renderedImage))
+                        .font(.headline)
+                        .bold()
+                } label: {
                     Image(systemName: "ellipsis")
                         .foregroundColor(.gray)
                         .padding(8)
                 }
             }
             
-            // Contenido de la entrada
             Text(entry.entryText ?? "No Text")
                 .font(.body)
                 .foregroundColor(.primary)
-                .lineLimit(4)
-                .padding(.leading, 10)
             
-            // Pie de la entrada con el botón "Read More"
-            HStack(spacing: 10) {
-                Button(action: {
-                    print("Share tapped")
-                }) {
-                    Image(systemName: "square.and.arrow.up")
-                        .foregroundColor(.blue)
-                        .font(.title2)
-                }
-                Spacer()
-                Button(action: {
-                    // Implement read more
-                }) {
-                    Text("Read More")
-                        .font(.callout)
-                        .bold()
-                        .foregroundColor(.blue)
+            let imagesArray = Array(entry.entryToImages as? Swift.Set<ImageEntry> ?? [])
+            // Imágenes relacionadas con la entrada
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(imagesArray, id: \.self) { (imageEntry: ImageEntry) in
+                        if let uiImage = UIImage(data: imageEntry.image!) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 85, height: 85)
+                                .cornerRadius(8)
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                .opacity(animateImages ? 1 : 0)
+                                .scaleEffect(animateImages ? 1 : 0.7)
+                                .animation(Animation.easeInOut(duration: 0.3), value: animateImages)
+                                .onTapGesture {
+                                    selectedImage = Image(uiImage: uiImage)
+                                    showImageViewer = true
+                                }
+                                .onAppear(perform: {
+                                    animateImages = true
+                                })
+                        } else {
+                            Color.gray
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(8)
+                        }
+                    }
                 }
             }
-            .padding(.trailing, 10)
         }
         .padding()
         .background(.white)
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
         .padding(.horizontal)
+        
+        // Alert de confirmación
+        .alert(isPresented: $showDeleteAlert) {
+            Alert(
+                title: Text("Are you sure?"),
+                message: Text("This action cannot be undone."),
+                primaryButton: .destructive(Text("Delete").foregroundStyle(.red)) {
+                    withAnimation {
+                        deleteEntry(entry)
+                    }
+                },
+                secondaryButton: .cancel()
+            )
+        }
+        .onAppear(perform: {
+            renderImageVm.downloadImage(cardImageUrl: card.large_image_url, card: card, diaryEntry: entry, setImageUrl: getSetLogoURL(for: card.set_name)?.absoluteString ?? "")
+            
+        })
+        
+        // Mostrar imagen ampliada
+        .sheet(isPresented: $showImageViewer) {
+            if let image = selectedImage {
+                ImageViewer(image: image)
+            }
+        }
     }
 }
+
+
+
+struct ImageViewer: View {
+    var image: Image
+    @Environment(\.presentationMode) var presentationMode
+    var body: some View {
+        VStack {
+            HStack(alignment: .top) {
+                Spacer()
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.secondary)
+                }
+                .padding()
+            }
+            
+            image
+                .resizable()
+                .scaledToFit()
+                .cornerRadius(10)
+                .padding()
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onTapGesture {
+            // Cerrar la vista cuando se toca fuera de la imagen
+            presentationMode.wrappedValue.dismiss()
+        }
+    }
+}
+
+
 
 struct HeaderView: View {
     let card: Card
