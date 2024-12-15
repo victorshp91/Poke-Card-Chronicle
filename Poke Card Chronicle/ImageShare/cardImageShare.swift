@@ -58,8 +58,8 @@ struct cardImageShareView: View {
                       
                         
                         
-                        VStack(alignment: .leading, spacing: 16) {
-                            VStack(alignment: .leading, spacing: 10) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            
                                 Text("")
                                     .font(.headline)
                                     .foregroundColor(.gray)
@@ -73,7 +73,7 @@ struct cardImageShareView: View {
                                 
                                 Text("\(entry.entryText ?? "")")
                                     .font(.callout)
-                            }
+                            
 
 //                            VStack(alignment: .leading, spacing: 4) {
 //                                Text("Trend Price")
@@ -103,6 +103,7 @@ struct cardImageShareView: View {
 //                                    .foregroundStyle(.green)
 //                                    .fontWeight(.bold)
 //                            }
+                            
                         }                            .padding()
                             
 

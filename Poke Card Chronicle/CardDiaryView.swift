@@ -2,18 +2,19 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct CardDiaryView: View {
-    
+   
     let card: Card
-    let setId: String
-    let setName: String
-    @State private var isShowingAddEntrySheet = false // Controla la presentación del sheet
-    
-    @FetchRequest var entries: FetchedResults<DiaryEntry>
+        let setId: String
+        let setName: String
+        @State private var isShowingAddEntrySheet = false // Controla la presentación del sheet
+        @ObservedObject var CardViewModel: CardViewModel
+        @FetchRequest var entries: FetchedResults<DiaryEntry>
 
-        init(card: Card, setName: String, setId: String) {
+        init(card: Card, setName: String, setId: String, viewModel: CardViewModel) {
             self.card = card
             self.setName = setName
             self.setId = setId
+            self.CardViewModel = viewModel
 
             // Configuramos el @FetchRequest aquí
             _entries = FetchRequest(
@@ -22,6 +23,8 @@ struct CardDiaryView: View {
                 predicate: NSPredicate(format: "cardId == %@", card.id)
             )
         }
+        
+    
   
     
     var body: some View {
@@ -45,11 +48,25 @@ struct CardDiaryView: View {
         .navigationTitle("Card Diary")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    isShowingAddEntrySheet = true
-                }) {
-                    Image(systemName: "plus.circle")
-                        .font(.title2)
+                HStack{
+                    Button(action: {
+                        withAnimation(.easeInOut) {
+                            CardViewModel.saveFavorite(cardId: card.id)
+                        }
+                    }) {
+                        Image(systemName: CardViewModel.isFavorite(cardId: card.id) ? "heart.fill" : "heart")
+                            .font(.title2)
+                            .foregroundStyle(.red)
+                            .symbolEffect(.bounce, options: .speed(3).repeat(3), value: CardViewModel.isFavorite(cardId: card.id))
+                    }
+                    Button(action: {
+                        isShowingAddEntrySheet = true
+                    }) {
+                        Image(systemName: "plus.circle")
+                            .font(.title2)
+                            .foregroundStyle(.red)
+                    }
+                    
                 }
             }
         }
@@ -76,7 +93,7 @@ struct EntryCard: View {
     @StateObject var renderImageVm: RenderImage = RenderImage()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        LazyVStack(alignment: .leading, spacing: 10) {
             
             HStack(alignment: .top) {
                 WebImage(url: URL(string: card.small_image_url))
@@ -189,6 +206,8 @@ struct EntryCard: View {
             }
         }
     }
+    
+    
 }
 
 
@@ -262,6 +281,7 @@ struct HeaderView: View {
                         .transition(.scale)
                     Spacer()
                     Image(systemName: "book")
+                    
                     Text("\(totalEntry)")
                 }.bold()
             }
@@ -278,5 +298,5 @@ struct HeaderView: View {
 
 
 #Preview {
-    CardDiaryView(card: Card(id: "1", name: "PIKACHU", small_image_url: "", large_image_url: "https://images.pokemontcg.io/sm1/5_hires.png", set_name: "Base Set"), setName: "150 mabajeo", setId: "pop3")
+    CardDiaryView(card: Card(id: "1", name: "PIKACHU", small_image_url: "", large_image_url: "https://images.pokemontcg.io/sm1/5_hires.png", set_name: "Base Set"), setName: "150 mabajeo", setId: "pop3", viewModel: CardViewModel())
 }

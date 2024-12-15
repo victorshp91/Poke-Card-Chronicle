@@ -46,7 +46,7 @@ struct CardEntryView: View {
                             .font(.caption)
                             .foregroundColor(entryTitle.count > 55 ? .red : .gray)
                     }
-                }
+                }.listRowBackground(Color.clear)
             }
 
             Section(header: Text("Diary Entry")) {
@@ -71,7 +71,7 @@ struct CardEntryView: View {
                             .font(.caption)
                             .foregroundColor(entryText.count > 255 ? .red : .gray)
                     }
-                }
+                }.listRowBackground(Color.clear)
             }
 
             Section(header:
@@ -82,7 +82,8 @@ struct CardEntryView: View {
                         Button(action: { showImagePicker.toggle() }) {
                             Image(systemName: "plus.circle.fill")
                                 .font(.title3)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.red)
+                            
                         }
                     }
                 }) {
@@ -110,8 +111,8 @@ struct CardEntryView: View {
                             }
                         }
                     }
-                }
-                .padding(.top)
+                }.listRowBackground(Color.clear)
+              
             }
         }
         .sheet(isPresented: $showImagePicker, onDismiss: loadImages) {
@@ -120,7 +121,7 @@ struct CardEntryView: View {
         .navigationBarItems(trailing: Button(action: saveEntry) {
             Text("Save")
                 .font(.headline)
-                .foregroundColor(isFormValid() ? .blue : .gray)
+                .foregroundColor(isFormValid() ? .red : .gray)
         }
         .disabled(!isFormValid()))
         .navigationTitle("Entry \(card.name)")

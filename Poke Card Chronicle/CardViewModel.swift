@@ -9,21 +9,24 @@
 import Combine
 import SwiftUI
 import CoreData
+
 class CardViewModel: ObservableObject {
     @Published var cards: [Card] = [] // Estado compartido para las cartas
     @Published var selectedSet: Set? = nil // Estado compartido para el set seleccionado
     @Published  var sets: [Set] = []
     @Published  var isLoading: Bool = true
     @Published var isLoadingSet: Bool = true
+    @Published var favorites: [Favorites] = [] // Array de favoritos
      let cardsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_cards.json")!
      let setsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_set.json")!
     
-  
+    @Environment(\.colorScheme) var colorScheme
    
     init() {
        
         fetchSets()
         fetchCards()
+        fetchFavorites()
     }
     
     
@@ -47,14 +50,14 @@ class CardViewModel: ObservableObject {
         }.resume()
     }
 
-     func fetchSets() {
+    func fetchSets() {
         URLSession.shared.dataTask(with: setsJsonURL) { data, response, error in
             if let data = data {
                 do {
                     let decodedResponse = try JSONDecoder().decode([Set].self, from: data)
                     DispatchQueue.main.async {
                         withAnimation {
-                            self.sets = decodedResponse.reversed()
+                            self.sets = decodedResponse.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
                             self.isLoadingSet = false
                         }
                     }
@@ -67,7 +70,42 @@ class CardViewModel: ObservableObject {
         }.resume()
     }
     
+    func fetchFavorites() {
+            // Cargar favoritos desde Core Data o cualquier fuente de datos
+            let fetchRequest: NSFetchRequest<Favorites> = Favorites.fetchRequest()
+            do {
+                favorites = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
+               
+            } catch {
+                print("Failed to fetch favorites: \(error)")
+            }
+        }
+    
+    
+    // Esta función busca la carta directamente en el array del viewModel
+    func isFavorite(cardId: String) -> Bool {
+           return favorites.contains(where: { $0.cardId == cardId })
+       }
    
+    func saveFavorite(cardId: String) {
+            if let favorite = favorites.first(where: { $0.cardId == cardId }) {
+                // Eliminar la carta de favoritos si ya está en favoritos
+                PersistenceController.shared.container.viewContext.delete(favorite)
+            } else {
+                // Agregar la carta a favoritos si no está presente
+                let newFavorite = Favorites(context: PersistenceController.shared.container.viewContext)
+                newFavorite.cardId = cardId
+                newFavorite.date = Date()
+                newFavorite.id = UUID()
+            }
+
+            do {
+                try PersistenceController.shared.container.viewContext.save()
+                fetchFavorites() // Actualizar la lista de favoritos después de guardar
+            } catch {
+                print("Failed to save favorite: \(error)")
+            }
+        }
      
 }
 
@@ -106,3 +144,7 @@ func deleteEntry(_ entry: DiaryEntry) {
         print("Error al eliminar la entrada: \(error.localizedDescription)")
     }
 }
+
+
+
+

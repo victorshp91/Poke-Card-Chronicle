@@ -2,8 +2,9 @@ import SwiftUI
 
 struct CustomTabBar: View {
     @Binding var selectedTab: Tab
-    @State private var isCollapsed: Bool = false // Estado para manejar colapso
 
+    @Binding var isCollapsed: Bool // Estado para manejar colapso
+    
     var body: some View {
         VStack {
             HStack {
@@ -17,14 +18,14 @@ struct CustomTabBar: View {
                         
                         Image(systemName: "line.3.horizontal")
                             .font(.system(size: 20))
-                            .foregroundColor(.blue)
+                            .foregroundColor(.red)
                             .padding()
                         
                     }
                     if !isCollapsed {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 20))
-                            .foregroundColor(.blue)
+                            .foregroundColor(.red)
                             .padding()
                     }
                 }
@@ -41,7 +42,7 @@ struct CustomTabBar: View {
                                 VStack {
                                     Image(systemName: tab.icon)
                                         .font(.system(size: 24))
-                                        .foregroundColor(selectedTab == tab ? .blue : .gray)
+                                        .foregroundColor(selectedTab == tab ? .red : .secondary)
                                 }
                                 .padding()
                             }
@@ -70,6 +71,7 @@ enum Tab: String, CaseIterable {
     case cards
     case allEntries
     case favorites
+    case about
 
     var title: String {
         switch self {
@@ -77,6 +79,7 @@ enum Tab: String, CaseIterable {
         case .cards: return "Cards"
         case .allEntries: return "All Entries"
         case .favorites: return "Favorites"
+        case .about: return "About"
         }
     }
 
@@ -86,6 +89,7 @@ enum Tab: String, CaseIterable {
         case .cards: return "greetingcard"
         case .allEntries: return "book"
         case .favorites: return "star"
+        case .about: return "info.circle"
         }
     }
 }
