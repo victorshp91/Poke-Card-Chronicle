@@ -86,10 +86,10 @@ enum Tab: String, CaseIterable {
     var icon: String {
         switch self {
      //   case .home: return "plus.circle"
-        case .cards: return "greetingcard"
-        case .allEntries: return "book"
-        case .favorites: return "star"
-        case .about: return "info.circle"
+        case .cards: return "greetingcard.fill"
+        case .allEntries: return "book.fill"
+        case .favorites: return "heart.fill"
+        case .about: return "info.circle.fill"
         }
     }
 }

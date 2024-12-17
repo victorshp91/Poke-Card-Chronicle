@@ -56,16 +56,6 @@ struct AllEntriesView: View {
 
         .navigationTitle("All Entries")
         .navigationBarTitleDisplayMode(.inline)
-        .onScrollPhaseChange({ _, newPhase in
-            withAnimation {
-                switch newPhase {
-                case .idle:
-                    isScrolling = false
-                case .tracking, .interacting, .decelerating, .animating:
-                    isScrolling = true
-                }
-            }
-        })
         .navigationBarItems(
             trailing: HStack {
                 Button(action: { withAnimation { isSearchBarPresented = true } }) {
@@ -75,7 +65,7 @@ struct AllEntriesView: View {
             }
         )
         .overlay(
-            SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, textPlaceHolder: "Search Entries...")
+            SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, actualSearch: Binding.constant(""), textPlaceHolder: "Search Entries...")
                 .opacity(isSearchBarPresented ? 1 : 0)
                 .transition(.slide)
                 .zIndex(isSearchBarPresented ? 1 : 0),

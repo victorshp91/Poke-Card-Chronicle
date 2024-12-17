@@ -144,36 +144,36 @@ struct EntryCard: View {
                 .font(.body)
                 .foregroundColor(.primary)
             
-            let imagesArray = Array(entry.entryToImages as? Swift.Set<ImageEntry> ?? [])
-            // Imágenes relacionadas con la entrada
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(imagesArray, id: \.self) { (imageEntry: ImageEntry) in
-                        if let uiImage = UIImage(data: imageEntry.image!) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 85, height: 85)
-                                .cornerRadius(8)
-                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-                                .opacity(animateImages ? 1 : 0)
-                                .scaleEffect(animateImages ? 1 : 0.7)
-                                .animation(Animation.easeInOut(duration: 0.3), value: animateImages)
-                                .onTapGesture {
-                                    selectedImage = Image(uiImage: uiImage)
-                                    showImageViewer = true
-                                }
-                                .onAppear(perform: {
-                                    animateImages = true
-                                })
-                        } else {
-                            Color.gray
-                                .frame(width: 100, height: 100)
-                                .cornerRadius(8)
-                        }
-                    }
-                }
-            }
+//            let imagesArray = Array(entry.entryToImages as? Swift.Set<ImageEntry> ?? [])
+//            // Imágenes relacionadas con la entrada
+//            ScrollView(.horizontal, showsIndicators: false) {
+//                HStack(spacing: 10) {
+//                    ForEach(imagesArray, id: \.self) { (imageEntry: ImageEntry) in
+//                        if let uiImage = UIImage(data: imageEntry.image!) {
+//                            Image(uiImage: uiImage)
+//                                .resizable()
+//                                .scaledToFill()
+//                                .frame(width: 85, height: 85)
+//                                .cornerRadius(8)
+//                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+//                                .opacity(animateImages ? 1 : 0)
+//                                .scaleEffect(animateImages ? 1 : 0.7)
+//                                .animation(Animation.easeInOut(duration: 0.3), value: animateImages)
+//                                .onTapGesture {
+//                                    selectedImage = Image(uiImage: uiImage)
+//                                    showImageViewer = true
+//                                }
+//                                .onAppear(perform: {
+//                                    animateImages = true
+//                                })
+//                        } else {
+//                            Color.gray
+//                                .frame(width: 100, height: 100)
+//                                .cornerRadius(8)
+//                        }
+//                    }
+//                }
+//            }
         }
         .padding()
         .background(.white)

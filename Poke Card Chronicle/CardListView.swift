@@ -12,14 +12,12 @@ struct Set: Identifiable, Decodable, Hashable {
     let name: String
 }
 
-struct Card: Identifiable, Decodable {
+struct Card: Identifiable, Decodable, Hashable {
     let id: String
     let name: String
     let small_image_url: String
     let large_image_url: String
     let set_name: String
-    
-    
 }
 
 struct CardListView: View {
@@ -30,6 +28,7 @@ struct CardListView: View {
 
     @State private var selectedSet: Set? = nil
     @State private var searchText: String = ""
+    @State private var actualSearch: String = ""
     @State private var isSearchBarPresented: Bool = false
     @Binding  var isScrolling: Bool
     
@@ -40,7 +39,7 @@ struct CardListView: View {
             
             return viewModel.cards.filter { card in
                 let matchesSet = selectedSet == nil || card.set_name == selectedSet!.id
-                let matchesSearch = searchText.isEmpty || card.name.localizedCaseInsensitiveContains(searchText)
+                let matchesSearch = actualSearch.isEmpty || card.name.localizedCaseInsensitiveContains(actualSearch)
                 let hasDiaryEntry = diaryEntriesSet.contains(card.id)
 
                 return matchesSet && matchesSearch && (!showOnlyDiaryEntries || hasDiaryEntry)
@@ -84,18 +83,7 @@ struct CardListView: View {
                         .padding(.top, 100)
                     }
         }.scrollDismissesKeyboard(.immediately)
-            .onScrollPhaseChange({_, newPhase in
-                withAnimation {
-                    switch newPhase {
-                    case .idle:
-                        isScrolling = false
-                    case .tracking, .interacting, .decelerating, .animating:
-                        isScrolling = true
-                        
-                    }
-                }
-                
-            })
+         
             .frame(maxWidth: .infinity)
             .navigationBarTitle("Cards", displayMode: .inline)
             .navigationBarItems(
@@ -120,10 +108,26 @@ struct CardListView: View {
                 }
             )
             .overlay(
-                SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, textPlaceHolder: "Search cards...")
-                    .opacity(isSearchBarPresented ? 1 : 0)
-                    .transition(.slide)
-                    .zIndex(isSearchBarPresented ? 1 : 0),
+                HStack{
+                    SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, actualSearch: $actualSearch, textPlaceHolder: "Search cards...")
+                        .opacity(isSearchBarPresented ? 1 : 0)
+                        .transition(.slide)
+                        .zIndex(isSearchBarPresented ? 1 : 0)
+                   if  isSearchBarPresented {
+                        
+                       Button(action: { actualSearch = searchText}){
+                           Text("GO")
+                               .padding()
+                                   .background(.red)
+                                   .foregroundStyle(.white)
+                                   .cornerRadius(10)
+                                   .padding(.trailing)
+                        }
+                       
+                        
+                    }
+                    
+                },
                 alignment: .top
             )
             .overlay(

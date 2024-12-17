@@ -7,6 +7,7 @@ struct ContentView: View {
 
     var body: some View {
         ZStack {
+            
             // Contenido de las vistas
             NavigationStack {
                 
@@ -28,7 +29,7 @@ struct ContentView: View {
             
                 
             NavigationStack {
-                FavoriteCardListView(viewModel: viewModel)
+                FavoriteCardListView(isScrolling: $showTabBar, viewModel: viewModel)
             }
                     
                         .opacity(selectedTab == .favorites ? 1 : 0)
@@ -36,7 +37,7 @@ struct ContentView: View {
                         .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
             
             NavigationStack {
-                FavoriteCardListView(viewModel: viewModel)
+                FavoriteCardListView(isScrolling: $showTabBar, viewModel: viewModel)
             }
                     
             .opacity(selectedTab == .about ? 1 : 0)
