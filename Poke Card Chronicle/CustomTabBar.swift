@@ -14,7 +14,7 @@ struct CustomTabBar: View {
                         isCollapsed.toggle()
                     }
                 }) {
-                    if isCollapsed {
+                    if !isCollapsed {
                         
                         Image(systemName: "line.3.horizontal")
                             .font(.system(size: 20))
@@ -22,7 +22,7 @@ struct CustomTabBar: View {
                             .padding()
                         
                     }
-                    if !isCollapsed {
+                    if isCollapsed {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 20))
                             .foregroundColor(.red)
@@ -31,7 +31,7 @@ struct CustomTabBar: View {
                 }
 
                 // Contenido de las pestañas
-                if !isCollapsed {
+                if isCollapsed {
                     HStack {
                         ForEach(Tab.allCases, id: \.self) { tab in
                             Button(action: {

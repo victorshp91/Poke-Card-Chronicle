@@ -11,7 +11,7 @@ struct ContentView: View {
             // Contenido de las vistas
             NavigationStack {
                 
-                CardListView(viewModel: viewModel, isScrolling: $showTabBar)
+                CardListView(viewModel: viewModel)
             }
                         .opacity(selectedTab == .cards ? 1 : 0)
                         .scaleEffect(selectedTab == .cards ? 1 : 0.9)
@@ -21,7 +21,7 @@ struct ContentView: View {
                 
 
             NavigationStack{
-                AllEntriesView(viewModel: viewModel, isScrolling: $showTabBar)
+                AllEntriesView(viewModel: viewModel)
             }
                     .opacity(selectedTab == .allEntries ? 1 : 0)
                     .scaleEffect(selectedTab == .allEntries ? 1 : 0.9)

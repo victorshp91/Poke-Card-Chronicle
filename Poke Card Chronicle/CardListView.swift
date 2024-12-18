@@ -30,7 +30,8 @@ struct CardListView: View {
     @State private var searchText: String = ""
     @State private var actualSearch: String = ""
     @State private var isSearchBarPresented: Bool = false
-    @Binding  var isScrolling: Bool
+    @State private var isTopBarPresented: Bool = true
+    
     
     @State private var showOnlyDiaryEntries: Bool = false // Controla si se filtran las cartas con DiaryEntry
 
@@ -137,15 +138,15 @@ struct CardListView: View {
                         // Botón para alternar visibilidad
                         Button(action: {
                             withAnimation {
-                                isScrolling.toggle() // Cambiar el estado
+                                isTopBarPresented.toggle() // Cambiar el estado
                             }
                         }) {
-                            Image(systemName: !isScrolling ? "chevron.right" : "chevron.left")
+                            Image(systemName: isTopBarPresented ? "chevron.right" : "chevron.left")
                             
                                 .font(.title2)
                                 .foregroundColor(.red)
                         }
-                        if !isScrolling {
+                        if isTopBarPresented {
                             // Contenido del SetBar (Picker y WebImage)
                             Picker("Select Set", selection: $selectedSet) {
                                 Text("All Sets").tag(nil as Set?)
@@ -184,12 +185,12 @@ struct CardListView: View {
                     .padding(10)
                     .background(.ultraThinMaterial)
                     .frame(height: 75)
-                    .frame(maxWidth: !isScrolling ? .infinity:150)
+                    .frame(maxWidth: isTopBarPresented ? .infinity:150)
                     .cornerRadius(15)
                     .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
                     .padding(10)
                 
-                    .animation(.easeInOut, value: !isScrolling),
+                    .animation(.easeInOut, value: isTopBarPresented),
                 alignment: .top)
         
         
@@ -220,7 +221,7 @@ struct CardListView: View {
 
 struct CardListView_Previews: PreviewProvider {
     static var previews: some View {
-        CardListView(viewModel: CardViewModel(), isScrolling: Binding.constant(false))
+        CardListView(viewModel: CardViewModel())
             .environmentObject(CardViewModel())
     }
 }

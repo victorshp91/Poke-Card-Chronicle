@@ -20,7 +20,7 @@ struct FavoriteCardListView: View {
     }
 
     @State private var selectedSortOption: SortOption = .dateDescending
-    
+    @State private var isTopBarPresented: Bool = true
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Favorites.date, ascending: false)])
     private var favorites: FetchedResults<Favorites>
     @StateObject var viewModel: CardViewModel
@@ -76,7 +76,16 @@ struct FavoriteCardListView: View {
         .frame(maxWidth: .infinity)
         .overlay(
             HStack(spacing: 10) {
-                if !isScrolling {
+                Button(action: {
+                    withAnimation {
+                        isTopBarPresented.toggle()
+                    }
+                }) {
+                    Image(systemName: isTopBarPresented ? "chevron.right" : "chevron.left")
+                        .font(.title2)
+                        .foregroundColor(.red)
+                }
+                if isTopBarPresented {
                     Menu {
                         ForEach(SortOption.allCases, id: \.self) { option in
                             Button(action: {
@@ -87,8 +96,18 @@ struct FavoriteCardListView: View {
                         }
                     } label: {
                         Label("Sort", systemImage: "arrow.up.arrow.down")
+                            .padding(8)
+                            .foregroundStyle(.white)
+                            .background(.red)
+                            .cornerRadius(15)
                     }
                     Spacer()
+                } else {
+                    Text("Sort").bold()
+                        .padding(8)
+                        .foregroundStyle(.white)
+                        .background(.red)
+                        .cornerRadius(15)
                 }
                 Text("\(selectedSortOption.rawValue)").foregroundStyle(.secondary)
             }
@@ -96,10 +115,10 @@ struct FavoriteCardListView: View {
             .background(.ultraThinMaterial)
             .cornerRadius(15)
             .frame(height: 75)
-            .frame(maxWidth: !isScrolling ? .infinity : 220)
+            .frame(maxWidth: isTopBarPresented ? .infinity : 220)
             .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
             .padding(10)
-            .animation(.easeInOut, value: !isScrolling),
+            .animation(.easeInOut, value: isTopBarPresented),
             alignment: .top
         )
     }

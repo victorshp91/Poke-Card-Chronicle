@@ -5,7 +5,7 @@ struct AllEntriesView: View {
 
     @FetchRequest(entity: DiaryEntry.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \DiaryEntry.entryDate, ascending: false)]) var allEntries: FetchedResults<DiaryEntry>
     @StateObject var viewModel: CardViewModel
-    @Binding var isScrolling: Bool
+    @State private var isTopBarpresented: Bool = true
     @State private var searchText: String = ""
     @State private var isSearchBarPresented: Bool = false
     @State private var showTodayEntriesOnly: Bool = true
@@ -76,14 +76,14 @@ struct AllEntriesView: View {
                 HStack(spacing: 10) {
                     Button(action: {
                         withAnimation {
-                            isScrolling.toggle()
+                            isTopBarpresented.toggle()
                         }
                     }) {
-                        Image(systemName: !isScrolling ? "chevron.right" : "chevron.left")
+                        Image(systemName: isTopBarpresented ? "chevron.right" : "chevron.left")
                             .font(.title2)
                             .foregroundColor(.red)
                     }
-                    if !isScrolling {
+                    if isTopBarpresented {
                         Button("Today") {
                             selectedDate = nil
                             showTodayEntriesOnly = true
@@ -113,16 +113,22 @@ struct AllEntriesView: View {
                         .cornerRadius(15)
 
                         Spacer()
+                    } else {
+                        Text("Filters").bold()
+                            .padding(8)
+                            .foregroundStyle(.white)
+                            .background(.red)
+                            .cornerRadius(15)
                     }
                 }
                 .padding(10)
                 .background(.ultraThinMaterial)
                 .cornerRadius(15)
                 .frame(height: 75)
-                .frame(maxWidth: !isScrolling ? .infinity : 220)
+                .frame(maxWidth: isTopBarpresented ? .infinity : 220)
                 .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
                 .padding(10)
-                .animation(.easeInOut, value: !isScrolling),
+                .animation(.easeInOut, value: isTopBarpresented),
             alignment: .top
         )
         .sheet(isPresented: $isDatePickerPresented) {
