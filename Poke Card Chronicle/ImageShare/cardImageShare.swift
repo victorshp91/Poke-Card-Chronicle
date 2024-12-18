@@ -22,22 +22,7 @@ struct cardImageShareView: View {
                         .opacity(0.7)
                 }
 
-                // Main content
-//                VStack{
-//                    HStack {
-//                        Spacer()
-//                        Text("POKE TCG VAULT").bold()
-//                            .font(.title3)
-//                            .foregroundStyle(.white)
-//                            .shadow(radius: 5)
-//                        Image("logo")
-//                            .resizable()
-//                            .cornerRadius(10)
-//                            .scaledToFit()
-//                            .frame(width: 70)
-//                    }
-//                    Spacer()
-//                }.padding()
+   
                 
                 VStack{
                     HStack{
@@ -137,8 +122,18 @@ struct cardImageShareView: View {
                     
                 VStack{
                     Spacer()
+                    
                     HStack {
                         Spacer()
+                        Text("POKE CARDS CHRONICLE - DIARY").bold()
+                            .font(.title3)
+                            .foregroundStyle(.white)
+                            .shadow(radius: 5)
+                        Image("logo")
+                            .resizable()
+                            .cornerRadius(10)
+                            .scaledToFit()
+                            .frame(width: 70)
                         Image("APPSTORE")
                             .resizable()
                             .scaledToFit()

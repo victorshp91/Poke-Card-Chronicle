@@ -23,7 +23,7 @@ struct Card: Identifiable, Decodable, Hashable {
 struct CardListView: View {
     
     
-    
+    @ObservedObject var subscriptionViewModel: SubscriptionViewModel
     @StateObject var viewModel: CardViewModel
 
     @State private var selectedSet: Set? = nil
@@ -73,7 +73,7 @@ struct CardListView: View {
                     } else {
                         LazyVGrid(columns: [GridItem(), GridItem()], spacing: 20) {
                             ForEach(filteredCards) { card in
-                                NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name), setId: card.set_name, viewModel: viewModel)) {
+                                NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
                                     CardView(card: card, sets: viewModel.sets)
                                     
                                     
@@ -82,6 +82,7 @@ struct CardListView: View {
                         }
                         .padding(.horizontal)
                         .padding(.top, 100)
+                        .padding(.bottom, 85)
                     }
         }.scrollDismissesKeyboard(.immediately)
          
@@ -221,7 +222,7 @@ struct CardListView: View {
 
 struct CardListView_Previews: PreviewProvider {
     static var previews: some View {
-        CardListView(viewModel: CardViewModel())
+        CardListView(subscriptionViewModel: SubscriptionViewModel(), viewModel: CardViewModel())
             .environmentObject(CardViewModel())
     }
 }

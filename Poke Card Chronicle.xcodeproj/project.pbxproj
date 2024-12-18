@@ -9,11 +9,13 @@
 /* Begin PBXBuildFile section */
 		F28E9F432D0B544900F8D35C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = F28E9F422D0B544900F8D35C /* SDWebImageSwiftUI */; };
 		F2A27AB72D0E9B5A004AA74A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2A27AB62D0E9B5A004AA74A /* Launch Screen.storyboard */; };
+		F2EC20392D12A6000039677B /* Poké Cards Chronicle - Diary.storekit in Resources */ = {isa = PBXBuildFile; fileRef = F2EC20382D12A6000039677B /* Poké Cards Chronicle - Diary.storekit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F28E9F282D0B478B00F8D35C /* Poke Card Chronicle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Poke Card Chronicle.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2A27AB62D0E9B5A004AA74A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		F2EC20382D12A6000039677B /* Poké Cards Chronicle - Diary.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Poké Cards Chronicle - Diary.storekit"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -52,6 +54,7 @@
 		F28E9F1F2D0B478B00F8D35C = {
 			isa = PBXGroup;
 			children = (
+				F2EC20382D12A6000039677B /* Poké Cards Chronicle - Diary.storekit */,
 				F2A27AB62D0E9B5A004AA74A /* Launch Screen.storyboard */,
 				F28E9F2A2D0B478B00F8D35C /* Poke Card Chronicle */,
 				F28E9F292D0B478B00F8D35C /* Products */,
@@ -135,6 +138,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2A27AB72D0E9B5A004AA74A /* Launch Screen.storyboard in Resources */,
+				F2EC20392D12A6000039677B /* Poké Cards Chronicle - Diary.storekit in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

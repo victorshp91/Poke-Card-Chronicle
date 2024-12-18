@@ -3,6 +3,8 @@ import SwiftUI
 struct ContentView: View {
     @State private var selectedTab: Tab = .cards
     @StateObject var viewModel: CardViewModel = CardViewModel()
+    @StateObject var subscriptionVm = SubscriptionViewModel()
+    @AppStorage("showOnBoardingScreen") var showOnBoardingScreen = true
     @State var showTabBar: Bool = true
 
     var body: some View {
@@ -11,7 +13,7 @@ struct ContentView: View {
             // Contenido de las vistas
             NavigationStack {
                 
-                CardListView(viewModel: viewModel)
+                CardListView(subscriptionViewModel: subscriptionVm, viewModel: viewModel)
             }
                         .opacity(selectedTab == .cards ? 1 : 0)
                         .scaleEffect(selectedTab == .cards ? 1 : 0.9)
@@ -29,7 +31,7 @@ struct ContentView: View {
             
                 
             NavigationStack {
-                FavoriteCardListView(isScrolling: $showTabBar, viewModel: viewModel)
+                FavoriteCardListView(isScrolling: $showTabBar, viewModel: viewModel, subscriptionViewModel: subscriptionVm)
             }
                     
                         .opacity(selectedTab == .favorites ? 1 : 0)
@@ -37,7 +39,7 @@ struct ContentView: View {
                         .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
             
             NavigationStack {
-                FavoriteCardListView(isScrolling: $showTabBar, viewModel: viewModel)
+                InfoView(subscriptionViewModel: subscriptionVm)
             }
                     
             .opacity(selectedTab == .about ? 1 : 0)
@@ -55,6 +57,12 @@ struct ContentView: View {
             .padding(.bottom)
         }.tint(.red)
         .edgesIgnoringSafeArea(.bottom) // Para que el Tab Bar flote
+        .fullScreenCover(isPresented: $showOnBoardingScreen){
+            
+            OnboardingView(subscriptionViewModel: subscriptionVm, showOnBoardingScreen: $showOnBoardingScreen)
+                .presentationDetents([.large])
+        }
+        
     }
 }
 

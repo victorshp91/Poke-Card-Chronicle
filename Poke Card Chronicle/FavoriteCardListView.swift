@@ -24,6 +24,7 @@ struct FavoriteCardListView: View {
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Favorites.date, ascending: false)])
     private var favorites: FetchedResults<Favorites>
     @StateObject var viewModel: CardViewModel
+    @StateObject var subscriptionViewModel: SubscriptionViewModel
     
     func sortFavorites(_ favorites: [Favorites], cards: [Card]) -> [Favorites] {
         switch selectedSortOption {
@@ -52,9 +53,14 @@ struct FavoriteCardListView: View {
                 ForEach(sortFavorites(Array(favorites), cards: viewModel.cards), id: \.self) { favorite in
                     
                     if let card = viewModel.cards.first(where: { $0.id == favorite.cardId }) {
-                        NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets, for: card.set_name), setId: card.set_name, viewModel: viewModel)) {
-                            CardView(card: card, sets: viewModel.sets)
-                                .padding(.vertical, 5)
+                        NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets, for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
+                            VStack{
+                                CardView(card: card, sets: viewModel.sets)
+                                    .padding(.vertical, 5)
+                                if let dateAdded = favorite.date {
+                                    Text("Added on \(dateAdded, style: .date)").foregroundStyle(.secondary).font(.caption).tint(.primary)
+                                }
+                            }
                         }
                     }
                 }
@@ -126,6 +132,6 @@ struct FavoriteCardListView: View {
 
 struct FavoriteCardListView_Previews: PreviewProvider {
     static var previews: some View {
-        FavoriteCardListView(isScrolling: Binding.constant(false), viewModel: CardViewModel())
+        FavoriteCardListView(isScrolling: Binding.constant(false), viewModel: CardViewModel(), subscriptionViewModel: SubscriptionViewModel())
     }
 }

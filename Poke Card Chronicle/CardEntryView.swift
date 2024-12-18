@@ -12,6 +12,8 @@ struct CardEntryView: View {
     @State private var selectedImages: [UIImage] = [] // Array to hold selected images
     @State private var showImagePicker: Bool = false // To toggle image picker
     @State private var showSuccessAlert: Bool = false // Alert for success
+    private let titleLimit = 25
+    private let entryLimit = 255
   
     
     @Environment(\.presentationMode) var presentationMode // To dismiss the view
@@ -21,7 +23,12 @@ struct CardEntryView: View {
     var body: some View {
         Form {
             Section(header: Text("Date")) {
-                DatePicker("Select Date", selection: $selectedDate, displayedComponents: [.date])
+                HStack{
+                    DatePicker("Select Date", selection: $selectedDate, displayedComponents: [.date])
+                } .padding(10)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(10)
+                    .listRowBackground(Color.clear)
             }
 
             Section(header: Text("Title")) {
@@ -32,8 +39,8 @@ struct CardEntryView: View {
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(10)
                         .onChange(of: entryTitle) {
-                            if entryTitle.count > 55 {
-                                entryTitle = String(entryTitle.prefix(55))
+                            if entryTitle.count > titleLimit {
+                                entryTitle = String(entryTitle.prefix(titleLimit))
                             }
                         }
 
@@ -42,9 +49,9 @@ struct CardEntryView: View {
                             .font(.caption)
                             .foregroundColor(.gray)
                         Spacer()
-                        Text("\(55 - entryTitle.count)")
+                        Text("\(titleLimit - entryTitle.count)")
                             .font(.caption)
-                            .foregroundColor(entryTitle.count > 55 ? .red : .gray)
+                            .foregroundColor(entryTitle.count == titleLimit ? .red : .gray)
                     }
                 }.listRowBackground(Color.clear)
             }
@@ -57,8 +64,8 @@ struct CardEntryView: View {
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(10)
                         .onChange(of: entryText) {
-                            if entryText.count > 255 {
-                                entryText = String(entryText.prefix(255))
+                            if entryText.count > entryLimit {
+                                entryText = String(entryText.prefix(entryLimit))
                             }
                         }
 
@@ -67,9 +74,9 @@ struct CardEntryView: View {
                             .font(.caption)
                             .foregroundColor(.gray)
                         Spacer()
-                        Text("\(255 - entryText.count)")
+                        Text("\(entryLimit - entryText.count)")
                             .font(.caption)
-                            .foregroundColor(entryText.count > 255 ? .red : .gray)
+                            .foregroundColor(entryText.count == entryLimit ? .red : .gray)
                     }
                 }.listRowBackground(Color.clear)
             }
@@ -115,7 +122,7 @@ struct CardEntryView: View {
               
             }
         }
-        .sheet(isPresented: $showImagePicker, onDismiss: loadImages) {
+        .sheet(isPresented: $showImagePicker) {
             ImagePicker(images: $selectedImages)
         }
         .navigationBarItems(trailing: Button(action: saveEntry) {
@@ -172,9 +179,7 @@ struct CardEntryView: View {
         }
     }
 
-    private func loadImages() {
-        // Handle loading of selected images if necessary
-    }
+   
 }
 
 struct CardEntryView_Previews: PreviewProvider {
