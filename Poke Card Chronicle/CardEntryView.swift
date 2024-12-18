@@ -4,7 +4,7 @@ import UIKit
 import CoreData
 
 struct CardEntryView: View {
-    let card: Card // ID de la carta como string
+    let card: Card // Card details
     let setName: String
     @State private var entryText: String = "" // Entry text
     @State private var entryTitle: String = ""
@@ -14,23 +14,25 @@ struct CardEntryView: View {
     @State private var showSuccessAlert: Bool = false // Alert for success
     private let titleLimit = 25
     private let entryLimit = 255
-  
     
     @Environment(\.presentationMode) var presentationMode // To dismiss the view
-
-    private let context = PersistenceController.shared.container.viewContext // Core Data context
-
+    
+    
+    var existingEntry: DiaryEntry? // Optional entry for editing
+    var isEditing: Bool { existingEntry != nil } // Check if editing
+    
     var body: some View {
         Form {
             Section(header: Text("Date")) {
-                HStack{
+                HStack {
                     DatePicker("Select Date", selection: $selectedDate, displayedComponents: [.date])
-                } .padding(10)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(10)
-                    .listRowBackground(Color.clear)
+                }
+                .padding(10)
+                .background(Color.gray.opacity(0.1))
+                .cornerRadius(10)
+                .listRowBackground(Color.clear)
             }
-
+            
             Section(header: Text("Title")) {
                 VStack(spacing: 10) {
                     TextEditor(text: $entryTitle)
@@ -43,7 +45,7 @@ struct CardEntryView: View {
                                 entryTitle = String(entryTitle.prefix(titleLimit))
                             }
                         }
-
+                    
                     HStack {
                         Text("Remaining:")
                             .font(.caption)
@@ -55,7 +57,7 @@ struct CardEntryView: View {
                     }
                 }.listRowBackground(Color.clear)
             }
-
+            
             Section(header: Text("Diary Entry")) {
                 VStack(spacing: 10) {
                     TextEditor(text: $entryText)
@@ -68,7 +70,7 @@ struct CardEntryView: View {
                                 entryText = String(entryText.prefix(entryLimit))
                             }
                         }
-
+                    
                     HStack {
                         Text("Remaining:")
                             .font(.caption)
@@ -80,20 +82,20 @@ struct CardEntryView: View {
                     }
                 }.listRowBackground(Color.clear)
             }
-
+            
             Section(header:
-                HStack {
-                    Text("Add Photos")
-                    Spacer()
-                    if selectedImages.count != 3 {
-                        Button(action: { showImagePicker.toggle() }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title3)
-                                .foregroundColor(.red)
-                            
-                        }
+                        HStack {
+                Text("Add Photos")
+                Spacer()
+                if selectedImages.count != 3 {
+                    Button(action: { showImagePicker.toggle() }) {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(.red)
+                        
                     }
-                }) {
+                }
+            }) {
                 ScrollView(.horizontal) {
                     HStack {
                         ForEach(selectedImages.indices, id: \.self) { index in
@@ -103,7 +105,7 @@ struct CardEntryView: View {
                                     .scaledToFill()
                                     .frame(height: 100)
                                     .cornerRadius(10)
-
+                                
                                 Button(action: {
                                     selectedImages.remove(at: index)
                                 }) {
@@ -119,68 +121,71 @@ struct CardEntryView: View {
                         }
                     }
                 }.listRowBackground(Color.clear)
-              
             }
         }
         .sheet(isPresented: $showImagePicker) {
             ImagePicker(images: $selectedImages)
         }
+        .onAppear {
+            if isEditing, let entry = existingEntry {
+                loadEntry(entry)
+            }
+        }
         .navigationBarItems(trailing: Button(action: saveEntry) {
-            Text("Save")
+            Text(isEditing ? "Update" : "Save")
                 .font(.headline)
                 .foregroundColor(isFormValid() ? .red : .gray)
         }
         .disabled(!isFormValid()))
-        .navigationTitle("Entry \(card.name)")
+        .navigationTitle("\(isEditing ? "Edit" : "Entry") \(card.name)")
         .navigationBarTitleDisplayMode(.inline)
         .alert(isPresented: $showSuccessAlert) {
-            Alert(title: Text("Success"), message: Text("Your entry has been saved"), dismissButton: .default(Text("OK")) {
-                presentationMode.wrappedValue.dismiss() // Close the view
+            Alert(title: Text("Success"), message: Text("Your entry has been \(isEditing ? "updated" : "saved")"), dismissButton: .default(Text("OK")) {
+                presentationMode.wrappedValue.dismiss()
             })
         }
-
     }
-
+    
     private func isFormValid() -> Bool {
-        // Ensure required fields are not empty
         return !entryTitle.isEmpty && !entryText.isEmpty
     }
-
+    
     private func saveEntry() {
-        guard isFormValid() else {
-            
-            return
-        }
-
-        let newEntry = DiaryEntry(context: context)
-        newEntry.id = UUID()
-        newEntry.entryTitle = entryTitle
-        newEntry.entryText = entryText
-        newEntry.entryDate = selectedDate
-        newEntry.cardId = card.id // Asociación usando solo el ID
-        newEntry.cardName = card.name
-
-        // Guardar imágenes como entidades separadas en ImageEntry
+        guard isFormValid() else { return }
+        
+        let entryToSave = existingEntry ?? DiaryEntry(context: PersistenceController.shared.container.viewContext)
+        entryToSave.id = entryToSave.id ?? UUID()
+        entryToSave.entryTitle = entryTitle
+        entryToSave.entryText = entryText
+        entryToSave.entryDate = selectedDate
+        entryToSave.cardId = card.id
+        entryToSave.cardName = card.name
+        
         let imageEntries = selectedImages.map { image in
-            let imageEntry = ImageEntry(context: context)
+            let imageEntry = ImageEntry(context: PersistenceController.shared.container.viewContext)
             imageEntry.id = UUID()
-            imageEntry.image = image.jpegData(compressionQuality: 1.0) // Convertir a Data
+            imageEntry.image = image.jpegData(compressionQuality: 1.0)
             return imageEntry
         }
-
-        // Asociar imágenes al nuevo Entry
-        newEntry.entryToImages = NSSet(array: imageEntries)
-
+        
+        entryToSave.entryToImages = NSSet(array: imageEntries)
+        
         do {
-            try context.save()
+            try PersistenceController.shared.container.viewContext.save()
             showSuccessAlert = true
         } catch {
             print(error.localizedDescription)
-            
         }
     }
-
-   
+    
+    private func loadEntry(_ entry: DiaryEntry) {
+        entryTitle = entry.entryTitle ?? ""
+        entryText = entry.entryText ?? ""
+        selectedDate = entry.entryDate ?? Date()
+        if let imageSet = entry.entryToImages as? Swift.Set<ImageEntry> {
+            selectedImages = imageSet.compactMap { UIImage(data: $0.image ?? Data()) }
+        }
+    }
 }
 
 struct CardEntryView_Previews: PreviewProvider {

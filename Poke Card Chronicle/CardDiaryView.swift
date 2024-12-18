@@ -100,7 +100,7 @@ struct CardDiaryView: View {
 }
 
 struct EntryCard: View {
-    let entry: DiaryEntry
+    @StateObject var entry: DiaryEntry
     let card: Card
     let setName: String
     @Environment(\.colorScheme) var colorScheme
@@ -159,6 +159,13 @@ struct EntryCard: View {
                 .offset(x: -12)
                 Spacer()
                 Menu {
+                    NavigationLink(destination: CardEntryView(card: card, setName: setName, existingEntry: entry)) {
+                        Button(action: {
+                            showDeleteAlert = true
+                        }) {
+                            Label("Edit", systemImage: "square.and.pencil")
+                        }
+                    }
                     Button(action: {
                         showDeleteAlert = true
                     }) {

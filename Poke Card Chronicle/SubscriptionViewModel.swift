@@ -3,10 +3,10 @@ import SwiftUI
 
 class SubscriptionViewModel: ObservableObject {
     @Published var hasLifetimePurchase: Bool = false
-    let entriesLimit = 12
+    let entriesLimit = 10
+
     init() {
         checkSubscription()
-        // Listen for updates immediately at launch
         listenForInitialTransactions()
     }
 
@@ -42,6 +42,7 @@ class SubscriptionViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             self.hasLifetimePurchase = true
                             self.saveSubscriptionToLocalStorage()
+                            self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
                         }
                     case .unverified(_, let error):
                         print("Unverified transaction: \(error.localizedDescription)")
@@ -67,6 +68,7 @@ class SubscriptionViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         self.hasLifetimePurchase = true
                         self.saveSubscriptionToLocalStorage()
+                        self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
                     }
                     await transaction.finish()
                 case .unverified(_, _):
@@ -86,4 +88,36 @@ class SubscriptionViewModel: ObservableObject {
             }
         }
     }
+
+    private func savePurchasesPhp(price: String) {
+       
+
+        guard let url = URL(string: "https://rayjewelry.us/pokeDiary/guardar_compra.php") else { return }
+
+        var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "precio", value: price),
+           
+        ]
+
+        guard let requestURL = urlComponents?.url else { return }
+
+        var request = URLRequest(url: requestURL)
+        request.httpMethod = "GET"
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    print("ERROR \(error)")
+                }
+                return
+            }
+
+          
+
+           
+        }.resume()
+    }
+
+    
 }

@@ -23,7 +23,7 @@ struct ContentView: View {
                 
 
             NavigationStack{
-                AllEntriesView(viewModel: viewModel)
+                AllEntriesView(viewModel: viewModel, subscriptionViewModel: subscriptionVm)
             }
                     .opacity(selectedTab == .allEntries ? 1 : 0)
                     .scaleEffect(selectedTab == .allEntries ? 1 : 0.9)

@@ -162,7 +162,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Poke Card Chronicle/Poke_Card_Chronicle.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Poke Card Chronicle/Preview Content\"";
 				DEVELOPMENT_TEAM = 8SB327NDUL;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -208,7 +208,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Poke Card Chronicle/Poke_Card_Chronicle.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Poke Card Chronicle/Preview Content\"";
 				DEVELOPMENT_TEAM = 8SB327NDUL;
 				ENABLE_HARDENED_RUNTIME = YES;

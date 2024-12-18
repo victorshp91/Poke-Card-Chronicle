@@ -11,6 +11,9 @@ import SwiftUI
 struct OnboardingView: View {
     @State private var currentPage = 0
     @State private var showPaywall = false
+    @State private var animateIcon = false
+    @State private var animateIcon2 = false
+    @State private var animateIcon3 = false
     @StateObject  var subscriptionViewModel: SubscriptionViewModel
     @Binding var showOnBoardingScreen: Bool
     var body: some View {
@@ -26,6 +29,8 @@ struct OnboardingView: View {
                             .resizable()
                             .frame(width: 150, height: 150)
                             .foregroundColor(.yellow)
+                            .scaleEffect(animateIcon ? 1.1 : 1.0)
+                            .animation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: animateIcon)
                         Text("Welcome to Pokémon Diary!")
                             .font(.title)
                             .fontWeight(.bold)
@@ -35,6 +40,8 @@ struct OnboardingView: View {
                             .font(.body)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
+                    }.onAppear {
+                        animateIcon = true
                     }
                     .tag(0)
 
@@ -44,6 +51,8 @@ struct OnboardingView: View {
                             .resizable()
                             .frame(width: 150, height: 150)
                             .foregroundColor(.blue)
+                            .scaleEffect(animateIcon2 ? 1.1 : 1.0)
+                            .animation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: animateIcon2)
                         Text("Save Your Memories")
                             .font(.title)
                             .fontWeight(.bold)
@@ -53,6 +62,8 @@ struct OnboardingView: View {
                             .font(.body)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
+                    }.onAppear {
+                        animateIcon2 = true
                     }
                     .tag(1)
 
@@ -62,6 +73,8 @@ struct OnboardingView: View {
                             .resizable()
                             .frame(width: 150, height: 150)
                             .foregroundColor(.green)
+                            .scaleEffect(animateIcon3 ? 1.1 : 1.0)
+                            .animation(Animation.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: animateIcon3)
                         Text("Powerful Features")
                             .font(.title)
                             .fontWeight(.bold)
@@ -71,6 +84,8 @@ struct OnboardingView: View {
                             .font(.body)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
+                    }.onAppear {
+                        animateIcon3 = true
                     }
                     .tag(2)
                 }

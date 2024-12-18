@@ -92,7 +92,12 @@ struct PaywallView: View {
                 HStack {
                     Image(systemName: "bolt.fill")
                         .foregroundColor(.blue)
-                    Text("Save every thought about your Pokémon cards")
+                    Text("Join hundreds of users who already have unlimited access")
+                }
+                HStack {
+                    Image(systemName: "clock")
+                        .foregroundColor(.blue)
+                    Text("The $19.99 offer is available for a limited time")
                 }
             }
             .font(.headline)
