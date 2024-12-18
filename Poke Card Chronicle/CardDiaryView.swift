@@ -5,7 +5,9 @@ import SDWebImageSwiftUI
 
 // Vista principal para el diario de cartas
 struct CardDiaryView: View {
-   
+    
+    
+
     let card: Card
     let setId: String
     let setName: String
@@ -42,7 +44,7 @@ struct CardDiaryView: View {
                 ForEach(entries, id: \.id) { entry in
                     EntryCard(
                         entry: entry,
-                        card: card
+                        card: card, setName: setName
                     )
                 }
             }
@@ -51,7 +53,7 @@ struct CardDiaryView: View {
             .frame(maxWidth: .infinity)
         }
         .overlay(
-            HeaderView(card: card, setId: setId, setName: setName, totalEntry: totalEntries),
+            HeaderView(card: card, setId: setId, setName: setName, totalEntry: entries.count),
             alignment: .top
         )
         .navigationTitle("Card Diary")
@@ -71,7 +73,7 @@ struct CardDiaryView: View {
                     }
                     // Botón para agregar una nueva entrada
                     Button(action: {
-                        if totalEntries <= 5 || subscriptionViewModel.hasLifetimePurchase{
+                        if totalEntries <= subscriptionViewModel.entriesLimit || subscriptionViewModel.hasLifetimePurchase{
                             isShowingAddEntrySheet = true
                         } else {
                             showPayWall = true
@@ -100,7 +102,8 @@ struct CardDiaryView: View {
 struct EntryCard: View {
     let entry: DiaryEntry
     let card: Card
-
+    let setName: String
+    @Environment(\.colorScheme) var colorScheme
     @State private var animateImages: Bool = false
     @State private var showDeleteAlert: Bool = false
     @State private var showImagesSheet: Bool = false
@@ -123,9 +126,11 @@ struct EntryCard: View {
                     Text(entry.entryTitle ?? "No Title")
                         .font(.headline)
                         .bold()
-                    Text("\(card.name)")
+                    
+                    Text("\(card.name) - \(setName)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    
                     Text(entry.entryDate ?? Date(), style: .date)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
@@ -175,7 +180,7 @@ struct EntryCard: View {
                 .foregroundColor(.primary)
         }
         .padding()
-        .background(.white)
+        .background(Color(.tertiarySystemBackground))
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
         .padding(.horizontal)

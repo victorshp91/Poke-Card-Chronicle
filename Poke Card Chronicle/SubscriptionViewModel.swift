@@ -3,7 +3,7 @@ import SwiftUI
 
 class SubscriptionViewModel: ObservableObject {
     @Published var hasLifetimePurchase: Bool = false
-
+    let entriesLimit = 12
     init() {
         checkSubscription()
         // Listen for updates immediately at launch

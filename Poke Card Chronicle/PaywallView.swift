@@ -7,9 +7,10 @@ struct PaywallView: View {
     @State private var animateIcon = false
     @State private var animateButton = false
     @State private var showSuccessMessage = false
-
+    @State private var showPolicy = false
+    @State private var showTerms = false
     var body: some View {
-        VStack {
+        ScrollView(showsIndicators: false) {
             HStack {
                 Spacer()
                 Button(action: {
@@ -70,7 +71,7 @@ struct PaywallView: View {
 
             Spacer()
 
-            Text("Keep track of all your Pokémon card adventures without limits. Purchase now to unlock unlimited entries.")
+            Text("Keep track of all your Pokémon card adventures without limits. Purchase now to unlock unlimited entries. The free version allows only \(subscriptionViewModel.entriesLimit) entries across all cards.")
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
@@ -96,6 +97,7 @@ struct PaywallView: View {
             }
             .font(.headline)
             .padding(.vertical)
+            .padding(.horizontal, 5)
 
             Spacer()
 
@@ -107,7 +109,7 @@ struct PaywallView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red)
+                    .background(Color.green)
                     .cornerRadius(12)
                     .shadow(radius: 5)
                     .scaleEffect(animateButton ? 1.1 : 1.0)
@@ -126,6 +128,22 @@ struct PaywallView: View {
                     .foregroundColor(.gray)
             }
             .padding(.top, 10)
+            
+            HStack {
+                Button("Privacy Policy") {
+                    showPolicy = true
+                }
+                Button("Terms & Conditions") {
+                    showTerms = true
+                }
+                
+            }.padding(.top)
+            .foregroundColor(.accentColor)
+            .sheet(isPresented: $showPolicy){
+                PrivacyPolicyView()
+            }.sheet(isPresented: $showTerms){
+                TermsAndConditionsView()
+            }
 
             Spacer()
         }

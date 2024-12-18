@@ -35,7 +35,8 @@ struct AllEntriesView: View {
                         if let matchingCard = viewModel.cards.first(where: { $0.id == entry.cardId }) {
                             EntryCard(
                                 entry: entry,
-                                card: matchingCard
+                                card: matchingCard,
+                                setName: setName(from: viewModel.sets, for: matchingCard.set_name)
                             )
                         }
                     }
@@ -65,7 +66,7 @@ struct AllEntriesView: View {
             }
         )
         .overlay(
-            SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, actualSearch: Binding.constant(""), textPlaceHolder: "Search Entries...")
+            SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, actualSearch: Binding.constant(""), textPlaceHolder: "Search Entries Title, Text, Pokemon name...")
                 .opacity(isSearchBarPresented ? 1 : 0)
                 .transition(.slide)
                 .zIndex(isSearchBarPresented ? 1 : 0),
@@ -186,7 +187,8 @@ struct AllEntriesView: View {
             } else {
                 matchesSearchText = (
                     entry.entryTitle?.localizedCaseInsensitiveContains(searchText) == true ||
-                    entry.entryText?.localizedCaseInsensitiveContains(searchText) == true
+                    entry.entryText?.localizedCaseInsensitiveContains(searchText) == true ||
+                    entry.cardName?.localizedCaseInsensitiveContains(searchText) == true
                 )
             }
             

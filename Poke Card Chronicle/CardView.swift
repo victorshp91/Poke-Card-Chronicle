@@ -13,12 +13,12 @@ import SDWebImageSwiftUI
         @State private var entryCount: Int = 0 // Para almacenar la cantidad de entradas
         
         @State var animate = false
-        
+        @Environment(\.colorScheme) var colorScheme
         var body: some View {
             VStack{
                 ZStack(alignment: .bottom) {
                     
-                    WebImage(url: URL(string: card.small_image_url))
+                    WebImage(url: URL(string: card.large_image_url))
                     { image in
                         image
                             .resizable()
@@ -43,8 +43,8 @@ import SDWebImageSwiftUI
                         }.padding()
                             .bold()
                             .background(.ultraThinMaterial)
-                            .foregroundStyle(.red)
-                        
+                            .foregroundStyle(colorScheme == .dark ? .white:.red)
+                            
                             .frame(minWidth: 75)
                             .cornerRadius(15)
                             .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
@@ -59,7 +59,7 @@ import SDWebImageSwiftUI
                 
                 Text(card.name)
                     .font(.caption).bold()
-                    .foregroundColor(.black)
+                    .tint(.primary)
                     .padding(.top, 4)
                     .frame(maxWidth: 150)
                     .multilineTextAlignment(.center)

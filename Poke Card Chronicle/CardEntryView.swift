@@ -158,6 +158,7 @@ struct CardEntryView: View {
         newEntry.entryText = entryText
         newEntry.entryDate = selectedDate
         newEntry.cardId = card.id // Asociación usando solo el ID
+        newEntry.cardName = card.name
 
         // Guardar imágenes como entidades separadas en ImageEntry
         let imageEntries = selectedImages.map { image in

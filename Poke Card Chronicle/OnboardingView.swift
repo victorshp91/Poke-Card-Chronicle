@@ -22,7 +22,7 @@ struct OnboardingView: View {
                 TabView(selection: $currentPage) {
                     // Página 1
                     VStack {
-                        Image(systemName: "star.circle.fill")
+                        Image("1")
                             .resizable()
                             .frame(width: 150, height: 150)
                             .foregroundColor(.yellow)
@@ -40,7 +40,7 @@ struct OnboardingView: View {
 
                     // Página 2
                     VStack {
-                        Image(systemName: "bookmark.circle.fill")
+                        Image("2")
                             .resizable()
                             .frame(width: 150, height: 150)
                             .foregroundColor(.blue)
@@ -58,7 +58,7 @@ struct OnboardingView: View {
 
                     // Página 3
                     VStack {
-                        Image(systemName: "bolt.circle.fill")
+                        Image("3")
                             .resizable()
                             .frame(width: 150, height: 150)
                             .foregroundColor(.green)

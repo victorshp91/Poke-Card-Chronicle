@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="DiaryEntry" representedClassName="DiaryEntry" syncable="YES" codeGenerationType="class">
         <attribute name="cardId" optional="YES" attributeType="String"/>
+        <attribute name="cardName" optional="YES" attributeType="String"/>
         <attribute name="entryDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="entryText" optional="YES" attributeType="String"/>
         <attribute name="entryTitle" optional="YES" attributeType="String"/>
