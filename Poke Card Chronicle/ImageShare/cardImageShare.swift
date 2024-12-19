@@ -32,22 +32,20 @@ struct cardImageShareView: View {
                                 .resizable()
                                 .cornerRadius(10)
                                 .scaledToFit()
-                                .frame(width: 100)
+                                .frame(width: 150)
                         }
                         
                     }
                     Spacer()
                 }.padding()
                    
-                    HStack {
+                HStack (alignment:.top){
                       
                         
                         
                         VStack(alignment: .leading, spacing: 10) {
                             
-                                Text("")
-                                    .font(.headline)
-                                    .foregroundColor(.gray)
+                                
                                 Text("\(entry.entryTitle ?? "")")
                                     .font(.title)
                                     .fontWeight(.bold)
@@ -87,7 +85,9 @@ struct cardImageShareView: View {
 //                                    .font(.title2)
 //                                    .foregroundStyle(.green)
 //                                    .fontWeight(.bold)
+                            
 //                            }
+                            
                             
                         }                            .padding()
                             
@@ -102,7 +102,7 @@ struct cardImageShareView: View {
                             .cornerRadius(15)
                             .shadow(radius: 5)
                     )
-                    .offset(x: 155)
+                    .offset(x: 140)
                     .rotationEffect(.degrees(-8))
                     .padding(.horizontal)
                     

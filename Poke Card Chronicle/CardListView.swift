@@ -22,7 +22,9 @@ struct Card: Identifiable, Decodable, Hashable {
 
 struct CardListView: View {
     
-    
+    @State var imageUrlFullScreen = ""
+    @State private var showImageFullScreen = false // Estado para mostrar la imagen a tamaño completo
+
     @ObservedObject var subscriptionViewModel: SubscriptionViewModel
     @StateObject var viewModel: CardViewModel
 
@@ -48,153 +50,160 @@ struct CardListView: View {
         }
     
     var body: some View {
-        
-        ScrollView {
-            if viewModel.isLoading {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                        Text("Loading data...")
+        ZStack(alignment: .center){
+            ScrollView {
+                if viewModel.isLoading {
+                    ProgressView()
+                        .scaleEffect(1.5)
+                    Text("Loading data...")
+                        .foregroundColor(.gray)
+                        .padding(.top, 8)
+                } else if filteredCards.isEmpty {
+                    // Mostrar mensaje si no hay cartas para mostrar
+                    VStack {
+                        Image("noData")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 100, height: 100)
                             .foregroundColor(.gray)
-                            .padding(.top, 8)
-                    } else if filteredCards.isEmpty {
-                        // Mostrar mensaje si no hay cartas para mostrar
-                        VStack {
-                            Image("noData")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100, height: 100)
-                                .foregroundColor(.gray)
-                                .padding(.bottom, 10)
-                            Text("No cards to display")
-                                .font(.headline)
-                                .foregroundColor(.gray)
-                        }
-                        .padding(.top, 100)
-                    } else {
-                        LazyVGrid(columns: [GridItem(), GridItem()], spacing: 20) {
-                            ForEach(filteredCards) { card in
-                                NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
-                                    CardView(card: card, sets: viewModel.sets)
-                                    
-                                    
-                                }
+                            .padding(.bottom, 10)
+                        Text("No cards to display")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.top, 100)
+                } else {
+                    LazyVGrid(columns: [GridItem(), GridItem()], spacing: 20) {
+                        ForEach(filteredCards) { card in
+                            NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
+                                CardView(card: card, sets: viewModel.sets, showImageFullScreen: $showImageFullScreen, imageUrl: $imageUrlFullScreen)
+                                
+                                
                             }
                         }
-                        .padding(.horizontal)
-                        .padding(.top, 100)
-                        .padding(.bottom, 85)
                     }
-        }.scrollDismissesKeyboard(.immediately)
-         
-            .frame(maxWidth: .infinity)
-            .navigationBarTitle("Cards", displayMode: .inline)
-            .navigationBarItems(
-                leading:
-                    Text("\(filteredCards.count)")
+                    .padding(.horizontal)
+                    .padding(.top, 100)
+                    .padding(.bottom, 85)
+                }
+            }.scrollDismissesKeyboard(.immediately)
+            
+                .frame(maxWidth: .infinity)
+                .navigationBarTitle("Cards", displayMode: .inline)
+                .navigationBarItems(
+                    leading:
+                        Text("\(filteredCards.count)")
                         .font(.headline)
                         .foregroundColor(.gray)
-                   
-                ,
-                trailing: HStack{
-                    Button(action: {
-                        showOnlyDiaryEntries.toggle()
-                    }) {
-                        Image(systemName: showOnlyDiaryEntries ? "book.fill" : "book")
-                            .foregroundColor(.red)
-                    }
-                    Button(action: { withAnimation { isSearchBarPresented = true } }) {
-                        Image(systemName: "magnifyingglass")
-                            .foregroundStyle(.red)
-                    }
                     
-                }
-            )
-            .overlay(
-                HStack{
-                    SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, actualSearch: $actualSearch, textPlaceHolder: "Search cards...")
-                        .opacity(isSearchBarPresented ? 1 : 0)
-                        .transition(.slide)
-                        .zIndex(isSearchBarPresented ? 1 : 0)
-                   if  isSearchBarPresented {
-                        
-                       Button(action: { actualSearch = searchText}){
-                           Text("GO")
-                               .padding()
-                                   .background(.red)
-                                   .foregroundStyle(.white)
-                                   .cornerRadius(10)
-                                   .padding(.trailing)
-                        }
-                       
-                        
-                    }
-                    
-                },
-                alignment: .top
-            )
-            .overlay(
-                !viewModel.isLoading &&  !viewModel.isLoadingSet && isSearchBarPresented ? nil :
-                    HStack {
-                        
-                        // Botón para alternar visibilidad
+                    ,
+                    trailing: HStack{
                         Button(action: {
-                            withAnimation {
-                                isTopBarPresented.toggle() // Cambiar el estado
-                            }
+                            showOnlyDiaryEntries.toggle()
                         }) {
-                            Image(systemName: isTopBarPresented ? "chevron.right" : "chevron.left")
-                            
-                                .font(.title2)
+                            Image(systemName: showOnlyDiaryEntries ? "book.fill" : "book")
                                 .foregroundColor(.red)
                         }
-                        if isTopBarPresented {
-                            // Contenido del SetBar (Picker y WebImage)
-                            Picker("Select Set", selection: $selectedSet) {
-                                Text("All Sets").tag(nil as Set?)
-                                ForEach(viewModel.sets) { set in
-                                    Text(set.name).tag(set as Set?)
-                                }
-                            }.tint(.red)
-                            .pickerStyle(MenuPickerStyle())
+                        Button(action: { withAnimation { isSearchBarPresented = true } }) {
+                            Image(systemName: "magnifyingglass")
+                                .foregroundStyle(.red)
                         }
-                        
-                        Spacer()
-                        if selectedSet != nil {
-                            // WebImage siempre visible
-                            WebImage(url:  getSetLogoURL(for: selectedSet!.id) ) { phase in
-                                if let image = phase.image {
-                                    image.resizable()
-                                        .scaledToFit()
-                                        .frame(maxHeight: 50)
-                                } else if phase.error != nil {
-                                    Color.red
-                                } else {
-                                    ProgressView()
-                                }
-                            }
-                        } else {
-                            Image("logo")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(maxHeight: 50)
-                        }
-                        
-                        
-                        
                         
                     }
-                    .padding(10)
-                    .background(.ultraThinMaterial)
-                    .frame(height: 75)
-                    .frame(maxWidth: isTopBarPresented ? .infinity:150)
-                    .cornerRadius(15)
-                    .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
-                    .padding(10)
-                
-                    .animation(.easeInOut, value: isTopBarPresented),
-                alignment: .top)
-        
-        
+                )
+                .overlay(
+                    HStack{
+                        SearchBarView(text: $searchText, isPresented: $isSearchBarPresented, actualSearch: $actualSearch, textPlaceHolder: "Search cards...")
+                            .opacity(isSearchBarPresented ? 1 : 0)
+                            .transition(.slide)
+                            .zIndex(isSearchBarPresented ? 1 : 0)
+                        if  isSearchBarPresented {
+                            
+                            Button(action: { actualSearch = searchText}){
+                                Text("GO")
+                                    .padding()
+                                    .background(.red)
+                                    .foregroundStyle(.white)
+                                    .cornerRadius(10)
+                                    .padding(.trailing)
+                            }
+                            
+                            
+                        }
+                        
+                    },
+                    alignment: .top
+                )
+                .overlay(
+                    !viewModel.isLoading &&  !viewModel.isLoadingSet && isSearchBarPresented ? nil :
+                        HStack {
+                            
+                            // Botón para alternar visibilidad
+                            Button(action: {
+                                withAnimation {
+                                    isTopBarPresented.toggle() // Cambiar el estado
+                                }
+                            }) {
+                                Image(systemName: isTopBarPresented ? "chevron.right" : "chevron.left")
+                                
+                                    .font(.title2)
+                                    .foregroundColor(.red)
+                            }
+                            if isTopBarPresented {
+                                // Contenido del SetBar (Picker y WebImage)
+                                Picker("Select Set", selection: $selectedSet) {
+                                    Text("All Sets").tag(nil as Set?)
+                                    ForEach(viewModel.sets) { set in
+                                        Text(set.name).tag(set as Set?)
+                                    }
+                                }.tint(.red)
+                                    .pickerStyle(MenuPickerStyle())
+                                
+                                Spacer()
+                            }
+                            
+                            
+                            if selectedSet != nil {
+                                // WebImage siempre visible
+                                WebImage(url:  getSetLogoURL(for: selectedSet!.id) ) { phase in
+                                    if let image = phase.image {
+                                        image.resizable()
+                                            .scaledToFit()
+                                            .frame(maxHeight: 50)
+                                    } else if phase.error != nil {
+                                        Color.red
+                                    } else {
+                                        ProgressView()
+                                    }
+                                }
+                            } else {
+                                Image("logo")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(maxHeight: 50)
+                            }
+                            
+                            
+                            
+                            
+                        }
+                        .padding(10)
+                        .frame(height: 75)
+                        .frame(maxWidth: isTopBarPresented ? .infinity:150)
+                        .background(.ultraThinMaterial)
+                    
+                        .cornerRadius(15)
+                        .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
+                        .padding(10)
+                    
+                        .animation(.easeInOut, value: isTopBarPresented),
+                    alignment: .top)
+            
+            if showImageFullScreen == true{
+                ImageFullScreenView(url: $imageUrlFullScreen, showFullImage: $showImageFullScreen)
+            }
+            
+        }
         
         
         
