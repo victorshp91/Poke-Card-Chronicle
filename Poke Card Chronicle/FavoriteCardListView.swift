@@ -52,7 +52,7 @@ struct FavoriteCardListView: View {
     var body: some View {
         ZStack{
             ScrollView(showsIndicators: false) {
-                LazyVGrid(columns: [GridItem(), GridItem()], spacing: 20) {
+                LazyVGrid(columns: getGridColumns()) {
                     ForEach(sortFavorites(Array(favorites), cards: viewModel.cards), id: \.self) { favorite in
                         
                         if let card = viewModel.cards.first(where: { $0.id == favorite.cardId }) {

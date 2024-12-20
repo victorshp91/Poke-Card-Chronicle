@@ -14,7 +14,7 @@ struct CardEntryView: View {
     @State private var showSuccessAlert: Bool = false // Alert for success
     private let titleLimit = 25
     private let entryLimit = 255
-    
+    @State private var animateCardImage = false
     @Environment(\.presentationMode) var presentationMode // To dismiss the view
     
     
@@ -23,6 +23,24 @@ struct CardEntryView: View {
     
     var body: some View {
         Form {
+            Section {
+                HStack{
+                    Spacer()
+                    WebImage(url: URL(string: card.small_image_url))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 250) // Imagen más grande
+                        .cornerRadius(15)
+                        .shadow(color: .gray.opacity(0.3), radius: 4, x: 0, y: 2)
+                        .opacity(animateCardImage ? 1 : 0)
+                        .scaleEffect(animateCardImage ? 1 : 0.7)
+                        .animation(Animation.easeInOut(duration: 0.3), value: animateCardImage)
+                        .onAppear {
+                            animateCardImage = true
+                        }
+                    Spacer()
+                }.listRowBackground(Color.clear)
+            }
             Section(header: Text("Date")) {
                 HStack {
                     DatePicker("Select Date", selection: $selectedDate, displayedComponents: [.date])
@@ -136,7 +154,21 @@ struct CardEntryView: View {
                 .font(.headline)
                 .foregroundColor(isFormValid() ? .red : .gray)
         }
-        .disabled(!isFormValid()))
+            .disabled(!isFormValid()))
+        
+        .navigationBarItems(leading:
+            Group {
+                if !isEditing {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Text("Cancel")
+                            .font(.headline)
+                            .foregroundStyle(.red)
+                    }
+                }
+            }
+        )
         .navigationTitle("\(isEditing ? "Edit" : "Entry") \(card.name)")
         .navigationBarTitleDisplayMode(.inline)
         .alert(isPresented: $showSuccessAlert) {

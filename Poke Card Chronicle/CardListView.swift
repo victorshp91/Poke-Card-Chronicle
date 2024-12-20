@@ -73,7 +73,7 @@ struct CardListView: View {
                     }
                     .padding(.top, 100)
                 } else {
-                    LazyVGrid(columns: [GridItem(), GridItem()], spacing: 20) {
+                    LazyVGrid(columns: getGridColumns()) {
                         ForEach(filteredCards) { card in
                             NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
                                 CardView(card: card, sets: viewModel.sets, showImageFullScreen: $showImageFullScreen, imageUrl: $imageUrlFullScreen)
@@ -182,7 +182,6 @@ struct CardListView: View {
                                     .scaledToFit()
                                     .frame(maxHeight: 50)
                             }
-                            
                             
                             
                             

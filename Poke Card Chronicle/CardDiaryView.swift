@@ -67,7 +67,7 @@ struct CardDiaryView: View {
                         }
                     }) {
                         Image(systemName: CardViewModel.isFavorite(cardId: card.id) ? "heart.fill" : "heart")
-                            .font(.title2)
+                            
                             .foregroundStyle(.red)
                             .symbolEffect(.bounce, options: .speed(3).repeat(3), value: CardViewModel.isFavorite(cardId: card.id))
                     }
@@ -80,13 +80,13 @@ struct CardDiaryView: View {
                         }
                     }) {
                         Image(systemName: "plus.circle")
-                            .font(.title2)
+                            
                             .foregroundStyle(.red)
                     }
                 }
             }
         }
-        .sheet(isPresented: $isShowingAddEntrySheet) {
+        .fullScreenCover(isPresented: $isShowingAddEntrySheet) {
             NavigationStack {
                 CardEntryView(card: card, setName: setName)
                     .presentationDetents([.large])
