@@ -73,7 +73,7 @@ struct SupportFormView: View {
                     }
                 }
             }
-            .navigationTitle("Support")
+            .navigationTitle("SUPPORT")
             .navigationBarTitleDisplayMode(.inline)
             .alert(isPresented: $showAlert) {
                 Alert(title: Text("Support Request"), message: Text(alertMessage), dismissButton: .default(Text("OK")))

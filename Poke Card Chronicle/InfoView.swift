@@ -155,7 +155,7 @@ struct InfoView: View {
                 
             }
             .listStyle(InsetGroupedListStyle())
-            .navigationTitle("App Info - Support")
+            .navigationTitle("APP INFO - SUPPORT")
             .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $showPayWall) {
                 PaywallView(subscriptionViewModel: subscriptionViewModel)

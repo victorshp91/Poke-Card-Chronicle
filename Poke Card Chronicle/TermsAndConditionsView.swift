@@ -40,7 +40,7 @@ struct TermsAndConditionsView: View {
             .padding()
         }
         
-        .navigationBarTitle("Terms & Conditions", displayMode: .inline)
+        .navigationBarTitle("TERMS & CONDITIONS", displayMode: .inline)
         .onAppear {
             loadTermsData()
         }

@@ -107,9 +107,9 @@ struct PaywallView: View {
             Spacer()
 
             Button(action: {
-                subscriptionViewModel.purchase(productID: "pokeDiaryUnlimited")
+                subscriptionViewModel.purchase(productID: "pokeDiaryLifetime")
             }) {
-                Text("Unlock for just $19.99")
+                Text("Unlock for just $29.99")
                     .font(.headline)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)

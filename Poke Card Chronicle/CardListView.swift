@@ -21,8 +21,9 @@ struct Card: Identifiable, Decodable, Hashable {
 }
 
 struct CardListView: View {
-    
-    @State var imageUrlFullScreen = ""
+    @State var cardId = "" // PARA FULL IMAGE
+    @State var imageUrlFullScreen = "" //  PARA FULL IMAGE
+    @State var smallImageUrlFullScreen = "" // PARA FULL IMAGE
     @State private var showImageFullScreen = false // Estado para mostrar la imagen a tamaño completo
 
     @ObservedObject var subscriptionViewModel: SubscriptionViewModel
@@ -51,45 +52,39 @@ struct CardListView: View {
     
     var body: some View {
         ZStack(alignment: .center){
-            ScrollView {
-                if viewModel.isLoading {
-                    ProgressView()
-                        .scaleEffect(1.5)
-                    Text("Loading data...")
-                        .foregroundColor(.gray)
-                        .padding(.top, 8)
-                } else if filteredCards.isEmpty {
-                    // Mostrar mensaje si no hay cartas para mostrar
-                    VStack {
-                        Image("noData")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
+            
+            
+                ScrollView {
+                    VStack{
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                        Text("Loading data...")
                             .foregroundColor(.gray)
-                            .padding(.bottom, 10)
-                        Text("No cards to display")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                    }
-                    .padding(.top, 100)
-                } else {
-                    LazyVGrid(columns: getGridColumns()) {
-                        ForEach(filteredCards) { card in
-                            NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
-                                CardView(card: card, sets: viewModel.sets, showImageFullScreen: $showImageFullScreen, imageUrl: $imageUrlFullScreen)
-                                
-                                
+                            .padding(.top, 8)
+                    } else if filteredCards.isEmpty {
+                        // Mostrar mensaje si no hay cartas para mostrar
+                        NoDataView(message: "No cards to display")
+                    } else {
+                        LazyVGrid(columns: getGridColumns()) {
+                            ForEach(filteredCards) { card in
+                                NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets , for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
+                                    CardView(card: card, sets: viewModel.sets, showImageFullScreen: $showImageFullScreen, cardId: $cardId, imageUrl: $imageUrlFullScreen, smallImageUrl: $smallImageUrlFullScreen)
+                                    
+                                    
+                                }
                             }
                         }
+                        .padding(.horizontal)
+                        
+                        .padding(.bottom, 85)
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 100)
-                    .padding(.bottom, 85)
-                }
-            }.scrollDismissesKeyboard(.immediately)
+                    }.padding(.top,100)
+            }
+            .scrollDismissesKeyboard(.immediately)
             
                 .frame(maxWidth: .infinity)
-                .navigationBarTitle("Cards", displayMode: .inline)
+                .navigationBarTitle(Text("HOME"), displayMode: .inline)
                 .navigationBarItems(
                     leading:
                         Text("\(filteredCards.count)")
@@ -199,7 +194,7 @@ struct CardListView: View {
                     alignment: .top)
             
             if showImageFullScreen == true{
-                ImageFullScreenView(url: $imageUrlFullScreen, showFullImage: $showImageFullScreen)
+                ImageFullScreenView(cardId: $cardId, url: $imageUrlFullScreen, small_image_url: $smallImageUrlFullScreen, showFullImage: $showImageFullScreen, cardViewModel: viewModel)
             }
             
         }

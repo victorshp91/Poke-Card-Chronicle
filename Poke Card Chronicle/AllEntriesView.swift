@@ -66,19 +66,8 @@ struct AllEntriesView: View {
                     
                 }
                 if filteredEntries.isEmpty {
-                    VStack {
-                        Image("noData")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.gray)
-                            .padding(.bottom, 10)
+                    NoDataView(message: "No entries to display")
                         
-                        Text("No entries to display")
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     
                 } else {
                     LazyVStack(spacing: 20) {
@@ -96,7 +85,7 @@ struct AllEntriesView: View {
                     .padding(.bottom, 75)
                     .frame(maxWidth: .infinity)
                 }
-            }.padding(.top, 100)
+            } .padding(.top, 100)
                 .fullScreenCover(isPresented: $showPayWall) {
                     PaywallView(subscriptionViewModel: subscriptionViewModel)
                 }
@@ -111,7 +100,7 @@ struct AllEntriesView: View {
                 
             )
         
-            .navigationTitle("All Entries")
+            .navigationTitle("ENTRIES")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 trailing: HStack {

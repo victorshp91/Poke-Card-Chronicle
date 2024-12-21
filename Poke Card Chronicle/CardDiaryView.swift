@@ -60,17 +60,8 @@ struct CardDiaryView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack {
-                    // Botón para guardar como favorito
-                    Button(action: {
-                        withAnimation(.easeInOut) {
-                            CardViewModel.saveFavorite(cardId: card.id)
-                        }
-                    }) {
-                        Image(systemName: CardViewModel.isFavorite(cardId: card.id) ? "heart.fill" : "heart")
-                            
-                            .foregroundStyle(.red)
-                            .symbolEffect(.bounce, options: .speed(3).repeat(3), value: CardViewModel.isFavorite(cardId: card.id))
-                    }
+                    FavoriteButton(cardId: card.id, viewModel: CardViewModel)
+                        
                     // Botón para agregar una nueva entrada
                     Button(action: {
                         if totalEntries <= subscriptionViewModel.entriesLimit || subscriptionViewModel.hasLifetimePurchase{
@@ -80,7 +71,8 @@ struct CardDiaryView: View {
                         }
                     }) {
                         Image(systemName: "plus.circle")
-                            
+                            .resizable()
+                            .scaledToFit()
                             .foregroundStyle(.red)
                     }
                 }
@@ -250,7 +242,7 @@ struct HeaderView: View {
                     WebImage(url: getSetLogoURL(for: setId))
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 125)
+                        .frame(maxWidth: .infinity)
                         .transition(.scale)
                     Spacer()
                     Image(systemName: "book")

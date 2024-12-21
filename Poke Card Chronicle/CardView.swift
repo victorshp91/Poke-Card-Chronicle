@@ -12,7 +12,9 @@ struct CardView: View {
     let sets: [Set]
     @State private var entryCount: Int = 0
     @Binding  var showImageFullScreen: Bool // Estado para mostrar la imagen a tamaño completo
+    @Binding var cardId: String
     @Binding var imageUrl: String
+    @Binding var smallImageUrl: String
     @State var animate = false
     @Environment(\.colorScheme) var colorScheme
     
@@ -22,7 +24,7 @@ struct CardView: View {
                 
                 ZStack(alignment: .bottom) {
                     ZStack(alignment: .topTrailing) {
-                        WebImage(url: URL(string: card.large_image_url))
+                        WebImage(url: URL(string: card.small_image_url))
                         { image in
                             image
                                 .resizable()
@@ -32,7 +34,7 @@ struct CardView: View {
                                 .padding(10)
                                 .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 6)
                         } placeholder: {
-                            WebImage(url: URL(string: card.small_image_url))
+                            Image("cardBack")
                                 .resizable()
                                 .scaledToFit()
                                 .cornerRadius(12)
@@ -43,6 +45,8 @@ struct CardView: View {
                         Button(action: {
                             withAnimation {
                                 imageUrl = card.large_image_url
+                                smallImageUrl = card.small_image_url
+                                cardId = card.id
                                 showImageFullScreen = true
                             }
                         }) {

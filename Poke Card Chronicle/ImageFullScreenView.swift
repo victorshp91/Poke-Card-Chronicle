@@ -8,15 +8,19 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct ImageFullScreenView: View {
+    @Binding var cardId: String
     @Binding var url: String
+    @Binding var small_image_url: String
     @Binding var showFullImage: Bool
     @State var animateImage = false
+    @State var cardViewModel: CardViewModel
     
     var body: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
                 
-                WebImage(url: URL(string: url))
+                WebImage(url: URL(string: url)) { image in
+                    image
                     .resizable()
                     .scaledToFit()
                     .edgesIgnoringSafeArea(.all)
@@ -28,29 +32,57 @@ struct ImageFullScreenView: View {
                         Animation.easeInOut(duration: 0.3),
                         value: animateImage
                     )
+                }placeholder: {
+                    WebImage(url: URL(string: small_image_url))
+                        .resizable()
+                        .scaledToFit()
+                        .edgesIgnoringSafeArea(.all)
+                        .cornerRadius(12)
+                        .shadow(color: .black.opacity(0.35), radius: 15, x: 0, y: 10)
+                        .padding()
+                        .scaleEffect(animateImage ? 1 : 0.9, anchor: .center) // Escala desde el centro
+                        .animation(
+                            Animation.easeInOut(duration: 0.3),
+                            value: animateImage
+                        )
+                }
                 
-                Button(action: {
-                    withAnimation {
-                        animateImage = false
+                HStack{
+                    
+                    FavoriteButton(cardId: cardId, viewModel: cardViewModel)
+                        .padding(5)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(15)
+                        .frame(maxWidth: 45)
+                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        
+                        
                         showFullImage = false
-                    }
-                    
-                }) {
-                    
-                    HStack{
-                        Image(systemName: "arrow.down.left.and.arrow.up.right.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .tint(.secondary)
+                        
+                        
+                    }) {
+                        
+                        HStack{
+                            Image(systemName: "arrow.down.left.and.arrow.up.right.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .tint(.secondary)
+                            
+                        }
+                        .padding(5)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(15)
+                        .frame(maxWidth: 45)
+                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
+                       
                         
                     }
-                    .padding(5)
-                    .background(.ultraThinMaterial)
-                    .cornerRadius(15)
-                    .frame(maxWidth: 45)
-                    .padding(.trailing)
                     
-                }
+                } .padding(.horizontal)
                 
                 
             }

@@ -39,7 +39,7 @@ struct PrivacyPolicyView: View {
             .padding()
         }
        
-        .navigationBarTitle("Privacy Policy", displayMode: .inline)
+        .navigationBarTitle("PRIVACY POLICY", displayMode: .inline)
         .onAppear {
             loadPolicyData()
         }

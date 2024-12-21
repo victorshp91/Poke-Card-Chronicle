@@ -10,18 +10,16 @@ class SubscriptionViewModel: ObservableObject {
         listenForInitialTransactions()
     }
 
-    private func saveSubscriptionToLocalStorage() {
-        // Guardar información de suscripción en almacenamiento local o algún otro lugar según la lógica deseada
-    }
+   
 
     func checkSubscription() {
         Task {
             for await result in Transaction.currentEntitlements {
                 if case .verified(let transaction) = result {
                     DispatchQueue.main.async {
-                        if transaction.productID == "pokeDiaryUnlimited" {
+                        if transaction.productID == "pokeDiaryLifetime" {
                             self.hasLifetimePurchase = true
-                            self.saveSubscriptionToLocalStorage()
+                           
                         }
                     }
                 }
@@ -41,7 +39,7 @@ class SubscriptionViewModel: ObservableObject {
                         await transaction.finish()
                         DispatchQueue.main.async {
                             self.hasLifetimePurchase = true
-                            self.saveSubscriptionToLocalStorage()
+                           
                             self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
                         }
                     case .unverified(_, let error):
@@ -67,7 +65,7 @@ class SubscriptionViewModel: ObservableObject {
                 case .verified(let transaction):
                     DispatchQueue.main.async {
                         self.hasLifetimePurchase = true
-                        self.saveSubscriptionToLocalStorage()
+                        
                         self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
                     }
                     await transaction.finish()

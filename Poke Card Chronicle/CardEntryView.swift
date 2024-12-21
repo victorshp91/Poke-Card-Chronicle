@@ -169,7 +169,7 @@ struct CardEntryView: View {
                 }
             }
         )
-        .navigationTitle("\(isEditing ? "Edit" : "Entry") \(card.name)")
+        .navigationTitle("\(isEditing ? "EDIT" : "ENTRY") \(card.name)")
         .navigationBarTitleDisplayMode(.inline)
         .alert(isPresented: $showSuccessAlert) {
             Alert(title: Text("Success"), message: Text("Your entry has been \(isEditing ? "updated" : "saved")"), dismissButton: .default(Text("OK")) {
