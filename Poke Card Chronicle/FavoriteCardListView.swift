@@ -11,9 +11,6 @@ import CoreData
 
 struct FavoriteCardListView: View {
     @Binding var isScrolling: Bool
-    @State var cardId = "" // PARA FULL IMAGE
-    @State var imageUrlFullScreen = "" // PARA FULL IMAGE
-    @State var smallImageUrl = "" // PARA FULL IMAGE
     @State private var showImageFullScreen = false // Estado para mostrar la imagen a tamaño completo
     enum SortOption: String, CaseIterable {
         case dateDescending = "Date ↓"
@@ -70,8 +67,8 @@ struct FavoriteCardListView: View {
                                 if let card = viewModel.cards.first(where: { $0.id == favorite.cardId }) {
                                     NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets, for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
                                         VStack{
-                                            CardView(card: card, sets: viewModel.sets, showImageFullScreen: $showImageFullScreen, cardId: $cardId, imageUrl: $imageUrlFullScreen, smallImageUrl: $smallImageUrl)
-                                                .padding(.vertical, 5)
+                                            CardView(card: card, showImageFullScreen: $showImageFullScreen, cardViewModel: viewModel)
+                                              //  .padding(.vertical, 5)
                                             if let dateAdded = favorite.date {
                                                 Text("\(dateAdded, style: .date)").foregroundStyle(.secondary).font(.caption).tint(.primary)
                                             }
@@ -147,9 +144,12 @@ struct FavoriteCardListView: View {
                     alignment: .top
                 )
                 
-                if showImageFullScreen {
-                    ImageFullScreenView(cardId: $cardId, url: $imageUrlFullScreen, small_image_url: $smallImageUrl, showFullImage: $showImageFullScreen, cardViewModel: viewModel)
-                }
+                
+            }
+            
+            
+            if showImageFullScreen {
+                ImageFullScreenView(showFullImage: $showImageFullScreen, cardViewModel: viewModel)
             }
         }
     }

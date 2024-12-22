@@ -9,13 +9,10 @@ import SDWebImageSwiftUI
 
 struct CardView: View {
     let card: Card
-    let sets: [Set]
     @State private var entryCount: Int = 0
-    @Binding  var showImageFullScreen: Bool // Estado para mostrar la imagen a tamaño completo
-    @Binding var cardId: String
-    @Binding var imageUrl: String
-    @Binding var smallImageUrl: String
+    @Binding var showImageFullScreen: Bool // Estado para mostrar la imagen a tamaño completo
     @State var animate = false
+    @StateObject var cardViewModel: CardViewModel
     @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
@@ -44,9 +41,8 @@ struct CardView: View {
                         }
                         Button(action: {
                             withAnimation {
-                                imageUrl = card.large_image_url
-                                smallImageUrl = card.small_image_url
-                                cardId = card.id
+                                cardViewModel.cardFullScreen = card
+                                
                                 showImageFullScreen = true
                             }
                         }) {
@@ -96,7 +92,7 @@ struct CardView: View {
                         .frame(maxWidth: 150)
                         .multilineTextAlignment(.center)
                     
-                    Text("\(setName(from: sets, for: card.set_name))")
+                    Text("\(setName(from: cardViewModel.sets, for: card.set_name))")
                         .font(.caption2)
                         .foregroundColor(.gray)
                         .padding(.top, 2)

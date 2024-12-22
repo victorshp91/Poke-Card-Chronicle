@@ -125,7 +125,7 @@ struct cardImageShareView: View {
                     
                     HStack {
                         Spacer()
-                        Text("POKE CARDS CHRONICLE - DIARY").bold()
+                        Text("Poké Cards - Diary Journal").bold()
                             .font(.title3)
                             .foregroundStyle(.white)
                             .shadow(radius: 5)

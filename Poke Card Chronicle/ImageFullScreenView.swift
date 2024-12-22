@@ -8,18 +8,16 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct ImageFullScreenView: View {
-    @Binding var cardId: String
-    @Binding var url: String
-    @Binding var small_image_url: String
+   
     @Binding var showFullImage: Bool
     @State var animateImage = false
-    @State var cardViewModel: CardViewModel
+    @StateObject var cardViewModel: CardViewModel
     
     var body: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
                 
-                WebImage(url: URL(string: url)) { image in
+                WebImage(url: URL(string: cardViewModel.cardFullScreen.large_image_url)) { image in
                     image
                     .resizable()
                     .scaledToFit()
@@ -33,7 +31,7 @@ struct ImageFullScreenView: View {
                         value: animateImage
                     )
                 }placeholder: {
-                    WebImage(url: URL(string: small_image_url))
+                    WebImage(url: URL(string: cardViewModel.cardFullScreen.small_image_url))
                         .resizable()
                         .scaledToFit()
                         .edgesIgnoringSafeArea(.all)
@@ -47,16 +45,11 @@ struct ImageFullScreenView: View {
                         )
                 }
                 
-                HStack{
+                VStack{
                     
-                    FavoriteButton(cardId: cardId, viewModel: cardViewModel)
-                        .padding(5)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(15)
-                        .frame(maxWidth: 45)
-                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
+                  
                     
-                    Spacer()
+                    
                     
                     Button(action: {
                         
@@ -67,7 +60,7 @@ struct ImageFullScreenView: View {
                     }) {
                         
                         HStack{
-                            Image(systemName: "arrow.down.left.and.arrow.up.right.circle.fill")
+                            Image(systemName: "x.circle.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .tint(.secondary)
@@ -82,7 +75,14 @@ struct ImageFullScreenView: View {
                         
                     }
                     
-                } .padding(.horizontal)
+                    FavoriteButton(cardId: cardViewModel.cardFullScreen.id, viewModel: cardViewModel)
+                        .padding(5)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(15)
+                        .frame(maxWidth: 45)
+                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
+                    
+                }.padding(.trailing, 5)
                 
                 
             }

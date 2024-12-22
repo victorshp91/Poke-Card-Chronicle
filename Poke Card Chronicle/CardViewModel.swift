@@ -11,6 +11,7 @@ import SwiftUI
 import CoreData
 
 class CardViewModel: ObservableObject {
+    @Published var cardFullScreen: Card = Card()
     @Published var cards: [Card] = [] // Estado compartido para las cartas
     @Published var selectedSet: Set? = nil // Estado compartido para el set seleccionado
     @Published  var sets: [Set] = []
@@ -27,6 +28,7 @@ class CardViewModel: ObservableObject {
         fetchSets()
         fetchCards()
         fetchFavorites()
+        
     }
     
     

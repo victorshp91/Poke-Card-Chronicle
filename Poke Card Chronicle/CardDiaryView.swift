@@ -81,7 +81,7 @@ struct CardDiaryView: View {
         .fullScreenCover(isPresented: $isShowingAddEntrySheet) {
             NavigationStack {
                 CardEntryView(card: card, setName: setName)
-                    .presentationDetents([.large])
+                   
             }
         }
         .fullScreenCover(isPresented: $showPayWall) {
@@ -101,6 +101,7 @@ struct EntryCard: View {
     @State private var showImagesSheet: Bool = false
     @State var selectedImage: Image? // Imagen seleccionada
     @StateObject var renderImageVm: RenderImage = RenderImage()
+    @State private var isShowingEditEntrySheet = false
 
     var body: some View {
         LazyVStack(alignment: .leading, spacing: 10) {
@@ -151,13 +152,13 @@ struct EntryCard: View {
                 .offset(x: -12)
                 Spacer()
                 Menu {
-                    NavigationLink(destination: CardEntryView(card: card, setName: setName, existingEntry: entry)) {
+                    
                         Button(action: {
-                            showDeleteAlert = true
+                            isShowingEditEntrySheet = true
                         }) {
                             Label("Edit", systemImage: "square.and.pencil")
                         }
-                    }
+                    
                     Button(action: {
                         showDeleteAlert = true
                     }) {
@@ -177,6 +178,12 @@ struct EntryCard: View {
             Text(entry.entryText ?? "No Text")
                 .font(.body)
                 .foregroundColor(.primary)
+        }
+        .fullScreenCover(isPresented: $isShowingEditEntrySheet) {
+            NavigationStack {
+                CardEntryView(card: card, setName: setName, existingEntry: entry)
+                   
+            }
         }
         .padding()
         .background(Color(.tertiarySystemBackground))

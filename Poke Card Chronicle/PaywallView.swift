@@ -97,7 +97,7 @@ struct PaywallView: View {
                 HStack {
                     Image(systemName: "clock")
                         .foregroundColor(.blue)
-                    Text("The $19.99 offer is available for a limited time")
+                    Text("The $29.99 offer is available for a limited time")
                 }
             }
             .font(.headline)

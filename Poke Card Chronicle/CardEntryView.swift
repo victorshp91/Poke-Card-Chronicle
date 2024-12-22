@@ -158,7 +158,7 @@ struct CardEntryView: View {
         
         .navigationBarItems(leading:
             Group {
-                if !isEditing {
+               
                     Button(action: {
                         presentationMode.wrappedValue.dismiss()
                     }) {
@@ -166,7 +166,7 @@ struct CardEntryView: View {
                             .font(.headline)
                             .foregroundStyle(.red)
                     }
-                }
+                
             }
         )
         .navigationTitle("\(isEditing ? "EDIT" : "ENTRY") \(card.name)")
