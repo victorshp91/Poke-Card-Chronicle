@@ -87,7 +87,7 @@ struct CardDiaryView: View {
         .fullScreenCover(isPresented: $showPayWall) {
             PaywallView(subscriptionViewModel: subscriptionViewModel)
         }
-        .presentationDetents([.large])
+      
     }
 }
 

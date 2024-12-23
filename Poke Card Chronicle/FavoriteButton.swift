@@ -10,9 +10,8 @@ import SwiftUI
 
 struct FavoriteButton: View {
     let cardId: String
- 
     @ObservedObject var viewModel: CardViewModel
-
+    
     var body: some View {
         Button(action: {
             withAnimation(.easeInOut) {

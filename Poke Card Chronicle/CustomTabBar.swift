@@ -70,7 +70,7 @@ enum Tab: String, CaseIterable {
   //  case home
     case cards
     case allEntries
-    case favorites
+    case collection
     case about
 
     var title: String {
@@ -78,7 +78,7 @@ enum Tab: String, CaseIterable {
      //   case .home: return "Add"
         case .cards: return "Cards"
         case .allEntries: return "All Entries"
-        case .favorites: return "Favorites"
+        case .collection: return "Collection"
         case .about: return "About"
         }
     }
@@ -88,7 +88,7 @@ enum Tab: String, CaseIterable {
      //   case .home: return "plus.circle"
         case .cards: return "greetingcard.fill"
         case .allEntries: return "book.fill"
-        case .favorites: return "heart.fill"
+        case .collection: return "tray.full.fill"
         case .about: return "info.circle.fill"
         }
     }

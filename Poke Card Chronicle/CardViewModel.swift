@@ -115,6 +115,30 @@ func getSetLogoURL(for setID: String) -> URL? {
    URL(string: "https://images.pokemontcg.io/\(setID)/logo.png")
 }
 
+
+// Función que genera la URL para obtener la imagen pequeña de una carta según su ID.
+func getSmallImageURL(for cardId: String) -> URL? {
+    // Dividir el `cardId` en dos partes separadas por el guion "-" (por ejemplo, "sv4-26" se convierte en ["sv4", "26"]).
+    let components = cardId.split(separator: "-")
+    
+    // Verificar que el resultado tiene exactamente dos partes. Si no, devolvemos `nil` porque el formato es inválido.
+    guard components.count == 2 else {
+        return nil
+    }
+    
+    // Asignar la primera parte (antes del "-") a `setPart`.
+    let setPart = components[0]
+    
+    // Asignar la segunda parte (después del "-") a `cardNumberPart`.
+    let cardNumberPart = components[1]
+    
+    // Construir la URL usando ambas partes. La primera parte (`setPart`) representa el set de cartas,
+    // y la segunda parte (`cardNumberPart`) representa el número de la carta dentro del set.
+    return URL(string: "https://images.pokemontcg.io/\(setPart)/\(cardNumberPart).png")
+}
+
+
+
 func fetchEntryCount(for cardId: String, in context: NSManagedObjectContext) -> Int {
     let fetchRequest: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
     fetchRequest.predicate = NSPredicate(format: "cardId == %@", cardId)

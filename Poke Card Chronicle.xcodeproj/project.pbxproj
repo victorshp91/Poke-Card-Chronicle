@@ -9,13 +9,13 @@
 /* Begin PBXBuildFile section */
 		F28E9F432D0B544900F8D35C /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = F28E9F422D0B544900F8D35C /* SDWebImageSwiftUI */; };
 		F2A27AB72D0E9B5A004AA74A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F2A27AB62D0E9B5A004AA74A /* Launch Screen.storyboard */; };
-		F2EC204D2D1667DB0039677B /* Poké Cards - Diary Journal.storekit in Resources */ = {isa = PBXBuildFile; fileRef = F2EC204C2D1667DB0039677B /* Poké Cards - Diary Journal.storekit */; };
+		F2CB5B0F2D18F27000F5FDB0 /* Poké Cards - Diary Journal.storekit in Resources */ = {isa = PBXBuildFile; fileRef = F2CB5B0E2D18F27000F5FDB0 /* Poké Cards - Diary Journal.storekit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F28E9F282D0B478B00F8D35C /* Poke Card Chronicle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Poke Card Chronicle.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2A27AB62D0E9B5A004AA74A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
-		F2EC204C2D1667DB0039677B /* Poké Cards - Diary Journal.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Poké Cards - Diary Journal.storekit"; sourceTree = "<group>"; };
+		F2CB5B0E2D18F27000F5FDB0 /* Poké Cards - Diary Journal.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Poké Cards - Diary Journal.storekit"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,8 +54,8 @@
 		F28E9F1F2D0B478B00F8D35C = {
 			isa = PBXGroup;
 			children = (
-				F2EC204C2D1667DB0039677B /* Poké Cards - Diary Journal.storekit */,
 				F2A27AB62D0E9B5A004AA74A /* Launch Screen.storyboard */,
+				F2CB5B0E2D18F27000F5FDB0 /* Poké Cards - Diary Journal.storekit */,
 				F28E9F2A2D0B478B00F8D35C /* Poke Card Chronicle */,
 				F28E9F292D0B478B00F8D35C /* Products */,
 			);
@@ -103,7 +103,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					F28E9F272D0B478B00F8D35C = {
 						CreatedOnToolsVersion = 16.0;
@@ -137,7 +137,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F2EC204D2D1667DB0039677B /* Poké Cards - Diary Journal.storekit in Resources */,
+				F2CB5B0F2D18F27000F5FDB0 /* Poké Cards - Diary Journal.storekit in Resources */,
 				F2A27AB72D0E9B5A004AA74A /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,7 +162,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Poke Card Chronicle/Poke_Card_Chronicle.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Poke Card Chronicle/Preview Content\"";
 				DEVELOPMENT_TEAM = 8SB327NDUL;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -208,7 +209,8 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Poke Card Chronicle/Poke_Card_Chronicle.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Poke Card Chronicle/Preview Content\"";
 				DEVELOPMENT_TEAM = 8SB327NDUL;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -281,6 +283,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -342,6 +345,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;

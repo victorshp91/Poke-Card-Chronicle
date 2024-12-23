@@ -31,11 +31,13 @@ struct ContentView: View {
             
                 
             NavigationStack {
-                FavoriteCardListView(isScrolling: $showTabBar, viewModel: viewModel, subscriptionViewModel: subscriptionVm)
+                
+                CollectionsGridView(cardViewModel: viewModel, subscriptionViewModel: subscriptionVm)
+                //FavoriteCardListView(isScrolling: $showTabBar, viewModel: viewModel, subscriptionViewModel: subscriptionVm)
             }
                     
-                        .opacity(selectedTab == .favorites ? 1 : 0)
-                        .scaleEffect(selectedTab == .favorites ? 1 : 0.9)
+            .opacity(selectedTab == .collection ? 1 : 0)
+            .scaleEffect(selectedTab == .collection ? 1 : 0.9)
                         .animation(Animation.easeInOut(duration: 0.2), value: selectedTab)
             
             NavigationStack {

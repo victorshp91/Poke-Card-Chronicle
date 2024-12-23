@@ -15,18 +15,18 @@ struct InfoView: View {
        
             List {
                 Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Privacy Policy")
-                            .font(.subheadline)
-                        
-                        Button(action: {
-                            showPrivacy = true
-                        }) {
-                            Text("View More")
-                                .font(.subheadline)
-                                .foregroundColor(.blue)
-                        }
-                    }
+//                    VStack(alignment: .leading, spacing: 8) {
+//                        Text("Privacy Policy")
+//                            .font(.subheadline)
+//                        
+//                        Button(action: {
+//                            showPrivacy = true
+//                        }) {
+//                            Text("View More")
+//                                .font(.subheadline)
+//                                .foregroundColor(.blue)
+//                        }
+//                    }
                     
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Contact Support")

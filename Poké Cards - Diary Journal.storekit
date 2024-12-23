@@ -9,32 +9,18 @@
       }
     ]
   },
-  "identifier" : "CA069944",
+  "identifier" : "C3574EB8",
   "nonRenewingSubscriptions" : [
 
   ],
   "products" : [
-    {
-      "displayPrice" : "29.99",
-      "familyShareable" : false,
-      "internalID" : "6739724998",
-      "localizations" : [
-        {
-          "description" : "Get Unlimited Entries",
-          "displayName" : "Unlimited Diary Journal",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "pokeDiaryLifetime",
-      "referenceName" : "PokeDiaryLifeTime",
-      "type" : "NonConsumable"
-    }
+
   ],
   "settings" : {
     "_applicationInternalID" : "6739556605",
     "_developerTeamID" : "8SB327NDUL",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 756443693.60330105,
+    "_lastSynchronizedDate" : 756615063.91928804,
     "_storeKitErrors" : [
       {
         "current" : null,

@@ -10,7 +10,7 @@ import SwiftUI
 import CoreData
 
 struct FavoriteCardListView: View {
-    @Binding var isScrolling: Bool
+    
     @State private var showImageFullScreen = false // Estado para mostrar la imagen a tamaño completo
     enum SortOption: String, CaseIterable {
         case dateDescending = "Date ↓"
@@ -96,56 +96,50 @@ struct FavoriteCardListView: View {
                 .navigationTitle("FAVORITE CARDS")
                 .navigationBarTitleDisplayMode(.inline)
                 .frame(maxWidth: .infinity)
-                .overlay(
-                    HStack(spacing: 10) {
-                        Button(action: {
-                            withAnimation {
-                                isTopBarPresented.toggle()
-                            }
-                        }) {
-                            Image(systemName: isTopBarPresented ? "chevron.right" : "chevron.left")
-                                .font(.title2)
-                                .foregroundColor(.red)
+                
+                
+                
+            }.overlay(
+                HStack(spacing: 10) {
+                    Button(action: {
+                        withAnimation {
+                            isTopBarPresented.toggle()
                         }
-                        if isTopBarPresented {
-                            Menu {
-                                ForEach(SortOption.allCases, id: \.self) { option in
-                                    Button(action: {
-                                        selectedSortOption = option
-                                    }) {
-                                        Text(option.rawValue)
-                                    }
+                    }) {
+                        Image(systemName: isTopBarPresented ? "chevron.right" : "chevron.left")
+                            .font(.title2)
+                            .foregroundColor(.red)
+                    }
+                    if isTopBarPresented {
+                        Menu {
+                            ForEach(SortOption.allCases, id: \.self) { option in
+                                Button(action: {
+                                    selectedSortOption = option
+                                }) {
+                                    Text(option.rawValue)
                                 }
-                            } label: {
-                                Label("Sort", systemImage: "arrow.up.arrow.down")
-                                    .padding(8)
-                                    .foregroundStyle(.white)
-                                    .background(.red)
-                                    .cornerRadius(15)
                             }
-                            Spacer()
-                        } else {
-                            Text("Sort").bold()
+                        } label: {
+                            Label("Sort", systemImage: "arrow.up.arrow.down")
                                 .padding(8)
                                 .foregroundStyle(.white)
                                 .background(.red)
                                 .cornerRadius(15)
                         }
-                        Text("\(selectedSortOption.rawValue)").foregroundStyle(.secondary)
+                        Spacer()
                     }
-                        .padding(10)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(15)
-                        .frame(height: 75)
-                        .frame(maxWidth: isTopBarPresented ? .infinity : 220)
-                        .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
-                        .padding(10)
-                        .animation(.easeInOut, value: isTopBarPresented),
-                    alignment: .top
-                )
-                
-                
-            }
+                    Text("\(selectedSortOption.rawValue)").foregroundStyle(.secondary)
+                }
+                    .padding(10)
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(15)
+                    .frame(height: 75)
+                    .frame(maxWidth: isTopBarPresented ? .infinity : 220)
+                    .shadow(color: Color.black.opacity(0.15), radius: 10, x: 0, y: 5)
+                    .padding(10)
+                    .animation(.easeInOut, value: isTopBarPresented),
+                alignment: .top
+            )
             
             
             if showImageFullScreen {
@@ -157,6 +151,6 @@ struct FavoriteCardListView: View {
 
 struct FavoriteCardListView_Previews: PreviewProvider {
     static var previews: some View {
-        FavoriteCardListView(isScrolling: Binding.constant(false), viewModel: CardViewModel(), subscriptionViewModel: SubscriptionViewModel())
+        FavoriteCardListView(viewModel: CardViewModel(), subscriptionViewModel: SubscriptionViewModel())
     }
 }

@@ -3,34 +3,20 @@ import SwiftUI
 
 class SubscriptionViewModel: ObservableObject {
     @Published var hasLifetimePurchase: Bool = false
-    let entriesLimit = 10
+    let entriesLimit = 10  // Limit for the number of entries
 
     init() {
         checkSubscription()
-        listenForInitialTransactions()
+        listenForTransactions()
     }
 
-   
-
-    func checkSubscription() {
-        Task {
-            for await result in Transaction.currentEntitlements {
-                if case .verified(let transaction) = result {
-                    DispatchQueue.main.async {
-                        if transaction.productID == "pokeDiaryLifetime" {
-                            self.hasLifetimePurchase = true
-                           
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    func purchase(productID: String) {
+    func purchase() {
         Task {
             do {
-                guard let product = try await Product.products(for: [productID]).first else { return }
+                guard let product = try await Product.products(for: ["diaryLifetime"]).first else {
+                    print("Product not found")
+                    return
+                }
                 let result = try await product.purchase()
                 switch result {
                 case .success(let verificationResult):
@@ -39,7 +25,6 @@ class SubscriptionViewModel: ObservableObject {
                         await transaction.finish()
                         DispatchQueue.main.async {
                             self.hasLifetimePurchase = true
-                           
                             self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
                         }
                     case .unverified(_, let error):
@@ -58,17 +43,30 @@ class SubscriptionViewModel: ObservableObject {
         }
     }
 
-    func listenForInitialTransactions() {
+    func checkSubscription() {
+        Task {
+            for await result in Transaction.currentEntitlements {
+                if case .verified(let transaction) = result, transaction.productID == "diaryLifetime" {
+                    DispatchQueue.main.async {
+                        self.hasLifetimePurchase = true
+                    }
+                }
+            }
+        }
+    }
+
+    func listenForTransactions() {
         Task {
             for await result in Transaction.updates {
                 switch result {
                 case .verified(let transaction):
-                    DispatchQueue.main.async {
-                        self.hasLifetimePurchase = true
-                        
-                        self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
+                    if transaction.productID == "diaryLifetime" {
+                        DispatchQueue.main.async {
+                            self.hasLifetimePurchase = true
+                            self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
+                        }
+                        await transaction.finish()
                     }
-                    await transaction.finish()
                 case .unverified(_, _):
                     break
                 }
@@ -88,14 +86,11 @@ class SubscriptionViewModel: ObservableObject {
     }
 
     private func savePurchasesPhp(price: String) {
-       
-
         guard let url = URL(string: "https://rayjewelry.us/pokeDiary/guardar_compra.php") else { return }
 
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         urlComponents?.queryItems = [
-            URLQueryItem(name: "precio", value: price),
-           
+            URLQueryItem(name: "precio", value: price)
         ]
 
         guard let requestURL = urlComponents?.url else { return }
@@ -103,19 +98,12 @@ class SubscriptionViewModel: ObservableObject {
         var request = URLRequest(url: requestURL)
         request.httpMethod = "GET"
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { _, _, error in
             if let error = error {
                 DispatchQueue.main.async {
-                    print("ERROR \(error)")
+                    print("Error in savePurchasesPhp: \(error)")
                 }
-                return
             }
-
-          
-
-           
         }.resume()
     }
-
-    
 }

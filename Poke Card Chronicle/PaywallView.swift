@@ -107,7 +107,7 @@ struct PaywallView: View {
             Spacer()
 
             Button(action: {
-                subscriptionViewModel.purchase(productID: "pokeDiaryLifetime")
+                subscriptionViewModel.purchase()
             }) {
                 Text("Unlock for just $29.99")
                     .font(.headline)

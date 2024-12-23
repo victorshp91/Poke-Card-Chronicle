@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="23F79" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24C101" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+    <entity name="CardsForCollection" representedClassName="CardsForCollection" syncable="YES" codeGenerationType="class">
+        <attribute name="cardId" optional="YES" attributeType="String"/>
+        <relationship name="cardsToCollections" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Collections" inverseName="collectionToCards" inverseEntity="Collections"/>
+    </entity>
+    <entity name="Collections" representedClassName="Collections" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="updateDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="collectionToCards" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CardsForCollection" inverseName="cardsToCollections" inverseEntity="CardsForCollection"/>
+    </entity>
     <entity name="DiaryEntry" representedClassName="DiaryEntry" syncable="YES" codeGenerationType="class">
         <attribute name="cardId" optional="YES" attributeType="String"/>
         <attribute name="cardName" optional="YES" attributeType="String"/>

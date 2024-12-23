@@ -87,6 +87,7 @@ struct AllEntriesView: View {
                 }
             } .padding(.top, 100)
                 .fullScreenCover(isPresented: $showPayWall) {
+                    
                     PaywallView(subscriptionViewModel: subscriptionViewModel)
                 }
             

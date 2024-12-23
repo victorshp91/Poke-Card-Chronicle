@@ -74,7 +74,8 @@ struct CardView: View {
                                 Text("\(entryCount)")
                             
                         }.tint(.secondary)
-                        .padding()
+                        .padding(.horizontal)
+                        .padding(.vertical, 5)
                         .background(.ultraThinMaterial)
                         .cornerRadius(15)
                         .frame(minWidth: 75)
