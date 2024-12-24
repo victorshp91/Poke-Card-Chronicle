@@ -3,6 +3,9 @@ import CoreData
 
 struct CollectionCardListView: View {
     @State private var showImageFullScreen = false // Estado para mostrar la imagen a tamaño completo
+    @State private var showDeleteAlert = false // Estado para mostrar el alert de eliminación
+    @State private var isTopBarPresented: Bool = true
+    @Environment(\.presentationMode) var presentationMode
     enum SortOption: String, CaseIterable {
         case dateDescending = "Date ↓"
         case dateAscending = "Date ↑"
@@ -11,7 +14,6 @@ struct CollectionCardListView: View {
     }
 
     @State private var selectedSortOption: SortOption = .dateDescending
-    @State private var isTopBarPresented: Bool = true
 
     let collection: Collections
     @StateObject var viewModel: CardViewModel
@@ -82,7 +84,6 @@ struct CollectionCardListView: View {
                     leading: Text("\(cardsForCollection().count)")
                         .font(.headline)
                         .foregroundColor(.gray)
-                   
                 )
                 .navigationTitle(collection.name ?? "Unnamed Collection")
                 .navigationBarTitleDisplayMode(.inline)
@@ -134,18 +135,25 @@ struct CollectionCardListView: View {
                 ImageFullScreenView(showFullImage: $showImageFullScreen, cardViewModel: viewModel)
             }
         }
+        .navigationBarItems(
+            trailing: Button(action: {
+                showDeleteAlert = true
+            }) {
+                Image(systemName: "trash.fill")
+            }
+        )
+        .alert(isPresented: $showDeleteAlert) {
+            Alert(
+                title: Text("Delete Collection"),
+                message: Text("Are you sure you want to delete this collection and all its cards?"),
+                primaryButton: .destructive(Text("Delete")) {
+                    viewModel.deleteCollectionAndCards(collection: collection)
+                    presentationMode.wrappedValue.dismiss()
+                },
+                secondaryButton: .cancel()
+            )
+        }
     }
-}
 
-//struct CollectionCardListView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        let mockCollection = Collections()
-//        mockCollection.name = "My Collection"
-//        
-//        CollectionCardListView(
-//            collection: mockCollection,
-//            viewModel: CardViewModel(),
-//            subscriptionViewModel: SubscriptionViewModel()
-//        )
-//    }
-//}
+   
+}

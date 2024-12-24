@@ -33,6 +33,20 @@ class CardViewModel: ObservableObject {
         
     }
     
+    func deleteCollectionAndCards(collection: Collections) {
+        if let cards = collection.collectionToCards?.allObjects as? [CardsForCollection] {
+            for card in cards {
+                // Aquí se elimina directamente la tarjeta de la colección
+                PersistenceController.shared.container.viewContext.delete(card)
+            }
+        }
+        // Finalmente, se elimina la colección
+        PersistenceController.shared.container.viewContext.delete(collection)
+        // Guardar cambios en el contexto (opcional)
+        try? PersistenceController.shared.container.viewContext.save()
+    }
+    
+    
     func isCardInAnyCollection(cardId: String) -> Bool {
         return collections.contains(where: {
             $0.collectionToCards?.contains(where: { ($0 as AnyObject).cardId == cardId }) ?? false

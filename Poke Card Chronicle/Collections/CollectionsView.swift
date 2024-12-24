@@ -101,11 +101,12 @@ struct CollectionsGridView: View {
                     }
                 }
                 .padding()
+                .padding(.bottom, 75)
             }
             .navigationTitle("COLLECTIONS")
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showAddCollectionSheet) {
-                CreateCollectionView()
+                CreateCollectionView(cardViewModel: cardViewModel)
             }
         
         

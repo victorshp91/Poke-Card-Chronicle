@@ -12,7 +12,7 @@ struct AddCardToCollectionButton: View {
         Button(action: {
             showMenu.toggle()
         }) {
-            Image(systemName: viewModel.isCardInAnyCollection(cardId: cardId) ? "tray.full.fill" : "tray.full.fill")
+            Image(systemName: viewModel.isCardInAnyCollection(cardId: cardId) ? "tray.full" : "tray")
                 .resizable()
                 .scaledToFit()
                 .tint(viewModel.isCardInAnyCollection(cardId: cardId) ? .red : .secondary)

@@ -16,6 +16,7 @@ struct CreateCollectionView: View {
     @State private var isFormSubmitted: Bool = false
     @State private var showAlert: Bool = false
     @State private var alertMessage: String = ""
+    @StateObject var cardViewModel: CardViewModel
     @Environment(\.presentationMode) var presentationMode
     var body: some View {
         
@@ -117,6 +118,7 @@ struct CreateCollectionView: View {
 
         do {
             try PersistenceController.shared.container.viewContext.save()
+            cardViewModel.fetchCollections()
             isFormSubmitted = true
         } catch {
             alertMessage = "Failed to save collection: \(error.localizedDescription)"
@@ -128,11 +130,11 @@ struct CreateCollectionView: View {
 struct CreateCollectionView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            CreateCollectionView()
+            CreateCollectionView(cardViewModel: CardViewModel())
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .preferredColorScheme(.dark)
             
-            CreateCollectionView()
+            CreateCollectionView(cardViewModel: CardViewModel())
                 .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
                 .preferredColorScheme(.light)
         }
