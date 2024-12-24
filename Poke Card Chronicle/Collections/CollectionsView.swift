@@ -25,14 +25,14 @@ struct CollectionsGridView: View {
     
     @StateObject var cardViewModel: CardViewModel
     @StateObject var subscriptionViewModel: SubscriptionViewModel
-    
+    @State var showAddCollectionSheet: Bool = false
     var body: some View {
         
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 16) {
                     // Add new collection button
                     Button(action: {
-                        addNewCollection()
+                        showAddCollectionSheet = true
                     }) {
                         VStack {
                             Image(systemName: "plus")
@@ -61,6 +61,7 @@ struct CollectionsGridView: View {
                             Text("Favorites")
                                 .foregroundColor(.primary)
                                 .font(.headline)
+                                .multilineTextAlignment(.center)
                         }
                         .padding(.vertical)
                         .frame(maxWidth: .infinity, minHeight: 175)
@@ -68,41 +69,49 @@ struct CollectionsGridView: View {
                         .cornerRadius(10)
                     }
                     
-                    // Display existing collections
+                    
                     ForEach(collections, id: \.self) { collection in
-                        VStack {
-                            Image(systemName: "tray.full")
-                                .font(.system(size: 40))
-                                .foregroundColor(.purple)
-                            Text(collection.name ?? "Unnamed")
-                                .font(.headline)
-                                .multilineTextAlignment(.center)
+                        NavigationLink(destination: CollectionCardListView(collection: collection, viewModel: cardViewModel, subscriptionViewModel: subscriptionViewModel)) {
+                            VStack(alignment: .center, spacing: 20) {
+                                
+                                
+                                
+                                
+                                // Convierte la relación Core Data a un array, ordénala y procesa los IDs
+                                let cards = (collection.collectionToCards as? Swift.Set<CardsForCollection>)?
+                                    .sorted(by: { $0.date ?? Date() > $1.date ?? Date() }) // Ordena por fecha
+                                    .prefix(3) // Limita a 3 cartas
+                                    .compactMap { $0.cardId } ?? [] // Convierte a array de IDs
+                                    
+                                
+                                AccordionPokemonCardsView(cardsId: cards)
+                                    .offset(x: cards.isEmpty || cards.count == 1 ? 0 : -15)
+                                
+                                Text(collection.name ?? "Unnamed")
+                                    .foregroundColor(.primary)
+                                    .font(.headline)
+                                    .multilineTextAlignment(.center)
+                            }
+                            
+                            .frame(maxWidth: .infinity, minHeight: 175)
+                            .background(.ultraThinMaterial)
+                            .cornerRadius(10)
+                            .padding(.vertical, 10)
                         }
-                        .frame(maxWidth: .infinity, minHeight: 175)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(10)
                     }
                 }
                 .padding()
             }
             .navigationTitle("COLLECTIONS")
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showAddCollectionSheet) {
+                CreateCollectionView()
+            }
         
         
     }
     
-    private func addNewCollection() {
-        // Create a new collection in Core Data
-        let newCollection = Collections(context: PersistenceController.shared.container.viewContext)
-        newCollection.name = "New Collection \(collections.count + 1)"
-        newCollection.date = Date() // Set the current date
-        
-        do {
-            try viewContext.save()
-        } catch {
-            print("Failed to save new collection: \(error)")
-        }
-    }
+    
 }
 
 struct CollectionsGridView_Previews: PreviewProvider {

@@ -53,15 +53,14 @@ struct CardDiaryView: View {
             .frame(maxWidth: .infinity)
         }
         .overlay(
-            HeaderView(card: card, setId: setId, setName: setName, totalEntry: entries.count),
+            HeaderView(card: card, setId: setId, setName: setName, totalEntry: entries.count, cardViewModel: CardViewModel),
             alignment: .top
         )
         .navigationTitle("Card Diary")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack {
-                    FavoriteButton(cardId: card.id, viewModel: CardViewModel)
-                        
+                    
                     // Botón para agregar una nueva entrada
                     Button(action: {
                         if totalEntries <= subscriptionViewModel.entriesLimit || subscriptionViewModel.hasLifetimePurchase{
@@ -73,7 +72,7 @@ struct CardDiaryView: View {
                         Image(systemName: "plus.circle")
                             .resizable()
                             .scaledToFit()
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.blue)
                     }
                 }
             }
@@ -222,6 +221,7 @@ struct HeaderView: View {
     let setName: String
     let totalEntry: Int
     @State private var animateCardImage: Bool = false
+    @StateObject var cardViewModel: CardViewModel
     
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
@@ -243,6 +243,13 @@ struct HeaderView: View {
                     .font(.title2).bold()
                     .multilineTextAlignment(.leading)
                 Text(setName)
+                HStack{
+                    FavoriteButton(cardId: card.id, viewModel: cardViewModel)
+                        .frame(width: 25)
+                    
+                    AddCardToCollectionButton(viewModel: cardViewModel, cardId: card.id)
+                        .frame(width: 25)
+                }
                 Spacer()
                 HStack(alignment: .bottom, spacing: 10) {
                     // Logo del set de cartas

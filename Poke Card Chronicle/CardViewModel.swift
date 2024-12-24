@@ -18,6 +18,7 @@ class CardViewModel: ObservableObject {
     @Published  var isLoading: Bool = true
     @Published var isLoadingSet: Bool = true
     @Published var favorites: [Favorites] = [] // Array de favoritos
+    @Published var collections: [Collections] = []
      let cardsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_cards.json")!
      let setsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_set.json")!
     
@@ -28,9 +29,32 @@ class CardViewModel: ObservableObject {
         fetchSets()
         fetchCards()
         fetchFavorites()
+        fetchCollections()
         
     }
     
+    func isCardInAnyCollection(cardId: String) -> Bool {
+        return collections.contains(where: {
+            $0.collectionToCards?.contains(where: { ($0 as AnyObject).cardId == cardId }) ?? false
+        })
+    }
+    
+    func isCardInCollection(cardId: String, collection: Collections) -> Bool {
+        // Verificar si collectionToCards contiene un cardId específico
+        return collection.collectionToCards?.contains(where: { ($0 as AnyObject).cardId == cardId }) ?? false
+    }
+
+    
+    
+    func fetchCollections() {
+            let request: NSFetchRequest<Collections> = Collections.fetchRequest()
+
+            do {
+                collections = try PersistenceController.shared.container.viewContext.fetch(request)
+            } catch {
+                print("Error fetching collections: \(error)")
+            }
+        }
     
      func fetchCards() {
         URLSession.shared.dataTask(with: cardsJsonURL) { data, response, error in
@@ -108,6 +132,35 @@ class CardViewModel: ObservableObject {
                 print("Failed to save favorite: \(error)")
             }
         }
+    
+    
+    func addCardToCollection(cardId: String, collection: Collections) {
+            // Crear una nueva relación entre el cardId y la colección en CardsForCollection
+            let newCardForCollection = CardsForCollection(context: PersistenceController.shared.container.viewContext)
+            newCardForCollection.cardId = cardId
+            newCardForCollection.date = Date()
+            
+            collection.addToCollectionToCards(newCardForCollection)
+
+            // Guardar los cambios en la base de datos
+        do {
+            try PersistenceController.shared.container.viewContext.save()
+            
+        } catch {
+            print(error.localizedDescription)
+        }
+        }
+
+    func removeCardFromCollection(cardId: String, collection: Collections) {
+        if let existingRelation = collection.collectionToCards?.compactMap({ $0 as? CardsForCollection }).first(where: { $0.cardId == cardId }) {
+            collection.removeFromCollectionToCards(existingRelation)
+            do {
+                try PersistenceController.shared.container.viewContext.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
      
 }
 

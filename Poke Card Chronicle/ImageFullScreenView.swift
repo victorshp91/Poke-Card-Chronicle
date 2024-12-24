@@ -82,6 +82,13 @@ struct ImageFullScreenView: View {
                         .frame(maxWidth: 45)
                         .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
                     
+                    AddCardToCollectionButton( viewModel: cardViewModel, cardId: cardViewModel.cardFullScreen.id)
+                        .padding(5)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(15)
+                        .frame(maxWidth: 45)
+                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
+                    
                 }.padding(.trailing, 5)
                 
                 
