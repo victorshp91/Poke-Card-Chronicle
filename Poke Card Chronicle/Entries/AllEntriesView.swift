@@ -19,50 +19,8 @@ struct AllEntriesView: View {
             
             VStack{
                 if !subscriptionViewModel.hasLifetimePurchase {
-                    VStack(alignment:.leading) {
-                        HStack{
-                            
-                            VStack(alignment: .leading){
-                                Text("Almost there!")
-                                    .font(.headline)
-                                    .foregroundColor(.red)
-                                
-                                Text("Only \(subscriptionViewModel.entriesLimit - allEntries.count) diary entries left in the free version.")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                            }
-                            Spacer()
-                            Image("subscription")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width:35, height:35)
-                                .foregroundColor(.yellow)
-                            
-                        }
-                        
-                        Button(action: {
-                            // Acción para mostrar la pantalla de compra
-                            showPayWall = true
-                        }) {
-                            
-                                
-                                Text("Unlock Unlimited Access")
-                                    .font(.headline)
-                                    .padding(.vertical, 8)
-                                    .padding(.horizontal)
-                                    .foregroundColor(.white)
-                                    .background(Color.red)
-                                    .cornerRadius(8)
-                            
-                            
-                        }
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color(.tertiarySystemBackground))
-                    .cornerRadius(10)
-                    .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
-                    .padding(.horizontal)
+                    SubscriptionPromptView(description: "Only \(max(0, subscriptionViewModel.entriesLimit - allEntries.count)) diary entries left in the free version.", subscriptionViewModel: subscriptionViewModel)
+                    //SubscriptionPromptView(subscriptionViewModel: subscriptionViewModel)
                     
                 }
                 if filteredEntries.isEmpty {
@@ -76,7 +34,10 @@ struct AllEntriesView: View {
                                 EntryCard(
                                     entry: entry,
                                     card: matchingCard,
-                                    setName: setName(from: viewModel.sets, for: matchingCard.set_name)
+                                    setName: setName(from: viewModel.sets, for: matchingCard.set_name),
+                                    cardViewModel: viewModel,
+                                    subscriptionViewModel: subscriptionViewModel
+                                    
                                 )
                             }
                         }

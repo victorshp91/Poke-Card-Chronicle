@@ -11,66 +11,43 @@ import SwiftUI
 import CoreData
 
 class CardViewModel: ObservableObject {
+    // MARK: - Published Properties
     @Published var cardFullScreen: Card = Card()
-    @Published var cards: [Card] = [] // Estado compartido para las cartas
-    @Published var selectedSet: Set? = nil // Estado compartido para el set seleccionado
-    @Published  var sets: [Set] = []
-    @Published  var isLoading: Bool = true
+    @Published var cards: [Card] = []
+    @Published var selectedSet: Set? = nil
+    @Published var sets: [Set] = []
+    @Published var isLoading: Bool = true
     @Published var isLoadingSet: Bool = true
-    @Published var favorites: [Favorites] = [] // Array de favoritos
+    @Published var favorites: [Favorites] = []
     @Published var collections: [Collections] = []
-     let cardsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_cards.json")!
-     let setsJsonURL = URL(string: "https://rayjewelry.us/chronicle/pokemon_set.json")!
     
+    
+
+    // MARK: - URLs
+    private let cardsJsonURL = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/pokemon_cards.json")!
+    private let setsJsonURL = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/pokemon_set.json")!
+
     @Environment(\.colorScheme) var colorScheme
-   
+
+    // MARK: - Initializer
     init() {
-       
         fetchSets()
         fetchCards()
         fetchFavorites()
         fetchCollections()
-        
-    }
-    
-    func deleteCollectionAndCards(collection: Collections) {
-        if let cards = collection.collectionToCards?.allObjects as? [CardsForCollection] {
-            for card in cards {
-                // Aquí se elimina directamente la tarjeta de la colección
-                PersistenceController.shared.container.viewContext.delete(card)
-            }
-        }
-        // Finalmente, se elimina la colección
-        PersistenceController.shared.container.viewContext.delete(collection)
-        // Guardar cambios en el contexto (opcional)
-        try? PersistenceController.shared.container.viewContext.save()
-    }
-    
-    
-    func isCardInAnyCollection(cardId: String) -> Bool {
-        return collections.contains(where: {
-            $0.collectionToCards?.contains(where: { ($0 as AnyObject).cardId == cardId }) ?? false
-        })
-    }
-    
-    func isCardInCollection(cardId: String, collection: Collections) -> Bool {
-        // Verificar si collectionToCards contiene un cardId específico
-        return collection.collectionToCards?.contains(where: { ($0 as AnyObject).cardId == cardId }) ?? false
     }
 
-    
-    
+    // MARK: - Fetch Functions
     func fetchCollections() {
-            let request: NSFetchRequest<Collections> = Collections.fetchRequest()
-
-            do {
-                collections = try PersistenceController.shared.container.viewContext.fetch(request)
-            } catch {
-                print("Error fetching collections: \(error)")
-            }
+        let request: NSFetchRequest<Collections> = Collections.fetchRequest()
+        do {
+            collections = try PersistenceController.shared.container.viewContext.fetch(request)
+        } catch {
+            print("Error fetching collections: \(error)")
         }
-    
-     func fetchCards() {
+    }
+
+    func fetchCards() {
         URLSession.shared.dataTask(with: cardsJsonURL) { data, response, error in
             if let data = data {
                 do {
@@ -109,110 +86,125 @@ class CardViewModel: ObservableObject {
             }
         }.resume()
     }
-    
+
     func fetchFavorites() {
-            // Cargar favoritos desde Core Data o cualquier fuente de datos
-            let fetchRequest: NSFetchRequest<Favorites> = Favorites.fetchRequest()
-            do {
-                favorites = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
-               
-            } catch {
-                print("Failed to fetch favorites: \(error)")
-            }
+        let fetchRequest: NSFetchRequest<Favorites> = Favorites.fetchRequest()
+        do {
+            favorites = try PersistenceController.shared.container.viewContext.fetch(fetchRequest)
+        } catch {
+            print("Failed to fetch favorites: \(error)")
         }
-    
-    
-    // Esta función busca la carta directamente en el array del viewModel
-    func isFavorite(cardId: String) -> Bool {
-           return favorites.contains(where: { $0.cardId == cardId })
-       }
-   
-    func saveFavorite(cardId: String) {
-            if let favorite = favorites.first(where: { $0.cardId == cardId }) {
-                // Eliminar la carta de favoritos si ya está en favoritos
-                PersistenceController.shared.container.viewContext.delete(favorite)
-            } else {
-                // Agregar la carta a favoritos si no está presente
-                let newFavorite = Favorites(context: PersistenceController.shared.container.viewContext)
-                newFavorite.cardId = cardId
-                newFavorite.date = Date()
-                newFavorite.id = UUID()
-            }
+    }
 
-            do {
-                try PersistenceController.shared.container.viewContext.save()
-                fetchFavorites() // Actualizar la lista de favoritos después de guardar
-            } catch {
-                print("Failed to save favorite: \(error)")
+    // MARK: - Collection Management
+    
+    
+    
+    func deleteCollectionAndCards(collection: Collections) {
+        if let cards = collection.collectionToCards?.allObjects as? [CardsForCollection] {
+            for card in cards {
+                PersistenceController.shared.container.viewContext.delete(card)
             }
         }
-    
-    
+        PersistenceController.shared.container.viewContext.delete(collection)
+        fetchCollections()
+        try? PersistenceController.shared.container.viewContext.save()
+    }
+
     func addCardToCollection(cardId: String, collection: Collections) {
-            // Crear una nueva relación entre el cardId y la colección en CardsForCollection
-            let newCardForCollection = CardsForCollection(context: PersistenceController.shared.container.viewContext)
-            newCardForCollection.cardId = cardId
-            newCardForCollection.date = Date()
-            
-            collection.addToCollectionToCards(newCardForCollection)
+        let newCardForCollection = CardsForCollection(context: PersistenceController.shared.container.viewContext)
+        newCardForCollection.cardId = cardId
+        newCardForCollection.date = Date()
+        collection.addToCollectionToCards(newCardForCollection)
 
-            // Guardar los cambios en la base de datos
         do {
             try PersistenceController.shared.container.viewContext.save()
-            
         } catch {
             print(error.localizedDescription)
         }
-        }
+    }
 
     func removeCardFromCollection(cardId: String, collection: Collections) {
         if let existingRelation = collection.collectionToCards?.compactMap({ $0 as? CardsForCollection }).first(where: { $0.cardId == cardId }) {
             collection.removeFromCollectionToCards(existingRelation)
             do {
                 try PersistenceController.shared.container.viewContext.save()
+                
+                
             } catch {
                 print(error.localizedDescription)
             }
         }
     }
-     
-}
 
-func getSetLogoURL(for setID: String) -> URL? {
-   URL(string: "https://images.pokemontcg.io/\(setID)/logo.png")
-}
+    func isCardInAnyCollection(cardId: String) -> Bool {
+        return collections.contains(where: {
+            $0.collectionToCards?.contains(where: { ($0 as AnyObject).cardId == cardId }) ?? false
+        })
+    }
 
-
-// Función que genera la URL para obtener la imagen pequeña de una carta según su ID.
-func getSmallImageURL(for cardId: String) -> URL? {
-    // Dividir el `cardId` en dos partes separadas por el guion "-" (por ejemplo, "sv4-26" se convierte en ["sv4", "26"]).
-    let components = cardId.split(separator: "-")
+    func isCardInCollection(cardId: String, collection: Collections) -> Bool {
+        return collection.collectionToCards?.contains(where: { ($0 as AnyObject).cardId == cardId }) ?? false
+    }
     
-    // Verificar que el resultado tiene exactamente dos partes. Si no, devolvemos `nil` porque el formato es inválido.
+    
+    func countCollectionsContainingCard(cardId: String) -> Int {
+        return collections.filter {
+            $0.collectionToCards?.contains {
+                ($0 as? CardsForCollection)?.cardId == cardId
+            } ?? false
+        }.count
+    }
+    
+    func countCards(in collection: Collections) -> Int {
+        return collection.collectionToCards?.count ?? 0
+    }
+
+    // MARK: - Favorites Management
+    func isFavorite(cardId: String) -> Bool {
+        return favorites.contains(where: { $0.cardId == cardId })
+    }
+
+    func saveFavorite(cardId: String) {
+        if let favorite = favorites.first(where: { $0.cardId == cardId }) {
+            PersistenceController.shared.container.viewContext.delete(favorite)
+        } else {
+            let newFavorite = Favorites(context: PersistenceController.shared.container.viewContext)
+            newFavorite.cardId = cardId
+            newFavorite.date = Date()
+            newFavorite.id = UUID()
+        }
+
+        do {
+            try PersistenceController.shared.container.viewContext.save()
+            fetchFavorites()
+        } catch {
+            print("Failed to save favorite: \(error)")
+        }
+    }
+}
+
+// MARK: - Utility Functions
+func getSetLogoURL(for setID: String) -> URL? {
+    URL(string: "https://images.pokemontcg.io/\(setID)/logo.png")
+}
+
+func getSmallImageURL(for cardId: String) -> URL? {
+    let components = cardId.split(separator: "-")
     guard components.count == 2 else {
         return nil
     }
-    
-    // Asignar la primera parte (antes del "-") a `setPart`.
     let setPart = components[0]
-    
-    // Asignar la segunda parte (después del "-") a `cardNumberPart`.
     let cardNumberPart = components[1]
-    
-    // Construir la URL usando ambas partes. La primera parte (`setPart`) representa el set de cartas,
-    // y la segunda parte (`cardNumberPart`) representa el número de la carta dentro del set.
     return URL(string: "https://images.pokemontcg.io/\(setPart)/\(cardNumberPart).png")
 }
-
-
 
 func fetchEntryCount(for cardId: String, in context: NSManagedObjectContext) -> Int {
     let fetchRequest: NSFetchRequest<DiaryEntry> = DiaryEntry.fetchRequest()
     fetchRequest.predicate = NSPredicate(format: "cardId == %@", cardId)
-    
+
     do {
-        let count = try context.count(for: fetchRequest)
-        return count
+        return try context.count(for: fetchRequest)
     } catch {
         print("Failed to fetch entry count: \(error)")
         return 0
@@ -220,24 +212,16 @@ func fetchEntryCount(for cardId: String, in context: NSManagedObjectContext) -> 
 }
 
 func deleteEntry(_ entry: DiaryEntry) {
-    // Si tienes relaciones específicas a manejar
     if let images = entry.entryToImages as? Swift.Set<ImageEntry> {
         for image in images {
             PersistenceController.shared.container.viewContext.delete(image)
         }
     }
-    
-    // Luego eliminar la entrada principal
     PersistenceController.shared.container.viewContext.delete(entry)
-        
+
     do {
         try PersistenceController.shared.container.viewContext.save()
     } catch {
-        // Manejar errores aquí
-        print("Error al eliminar la entrada: \(error.localizedDescription)")
+        print("Error deleting entry: \(error.localizedDescription)")
     }
 }
-
-
-
-

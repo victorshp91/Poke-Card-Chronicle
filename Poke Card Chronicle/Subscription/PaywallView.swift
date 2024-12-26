@@ -24,10 +24,10 @@ struct PaywallView: View {
                 .padding(16)
             }
 
-            Text("Unlock Unlimited Poké Diary!")
+            Text("Unlock Unlimited Poké Diary Journal!")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-                .padding(.top, 50)
+                .padding(.top, 20)
                 .multilineTextAlignment(.center)
 
             Spacer()
@@ -71,7 +71,7 @@ struct PaywallView: View {
 
             Spacer()
 
-            Text("Keep track of all your Pokémon card adventures without limits. Purchase now to unlock unlimited entries. The free version allows only \(subscriptionViewModel.entriesLimit) entries across all cards.")
+            Text("Keep track of all your Pokémon card adventures without limits. Purchase now to unlock unlimited entries. The free version allows only \(subscriptionViewModel.entriesLimit) entries and only \(subscriptionViewModel.collectionsLimit) Collections across all cards.")
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
@@ -83,6 +83,11 @@ struct PaywallView: View {
                     Image(systemName: "star.fill")
                         .foregroundColor(.yellow)
                     Text("Unlimited diary entries across all cards")
+                }
+                HStack {
+                    Image(systemName: "star.fill")
+                        .foregroundColor(.yellow)
+                    Text("Unlimited Card Collections across all cards")
                 }
                 HStack {
                     Image(systemName: "sparkles")
@@ -102,7 +107,7 @@ struct PaywallView: View {
             }
             .font(.headline)
             .padding(.vertical)
-            .padding(.horizontal, 5)
+            .padding(.horizontal)
 
             Spacer()
 

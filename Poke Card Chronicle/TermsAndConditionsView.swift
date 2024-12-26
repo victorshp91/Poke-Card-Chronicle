@@ -64,7 +64,7 @@ struct TermsAndConditionsView: View {
     }
     
     private func loadTermsData() {
-        guard let url = URL(string: "https://rayjewelry.us/pokeDiary/terms.json") else {
+        guard let url = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/terms.json") else {
             self.errorMessage = "Invalid URL"
             self.isLoading = false
             return

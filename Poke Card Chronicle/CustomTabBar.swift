@@ -39,10 +39,12 @@ struct CustomTabBar: View {
                                     selectedTab = tab
                                 
                             }) {
-                                VStack {
+                                VStack(alignment: .center) {
                                     Image(systemName: tab.icon)
                                         .font(.system(size: 24))
                                         .foregroundColor(selectedTab == tab ? .red : .secondary)
+                                    
+                                  
                                 }
                                 .padding()
                             }
@@ -77,9 +79,9 @@ enum Tab: String, CaseIterable {
         switch self {
      //   case .home: return "Add"
         case .cards: return "Cards"
-        case .allEntries: return "All Entries"
+        case .allEntries: return "Diary"
         case .collection: return "Collection"
-        case .about: return "About"
+        case .about: return "Info"
         }
     }
 

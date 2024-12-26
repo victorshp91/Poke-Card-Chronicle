@@ -18,6 +18,7 @@ struct FavoriteButton: View {
                 viewModel.saveFavorite(cardId: cardId)
             }
         }) {
+            
             Image(systemName: viewModel.isFavorite(cardId: cardId) ? "heart.fill" : "heart")
                 .resizable()
                 .scaledToFit()

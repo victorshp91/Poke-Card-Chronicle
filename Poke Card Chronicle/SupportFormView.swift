@@ -89,7 +89,7 @@ struct SupportFormView: View {
             return
         }
 
-        guard let url = URL(string: "https://rayjewelry.us/pokeDiary/guardar_support.php") else { return }
+        guard let url = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/guardar_support.php") else { return }
 
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         urlComponents?.queryItems = [

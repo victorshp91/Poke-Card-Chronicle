@@ -44,7 +44,7 @@ struct CardDiaryView: View {
                 ForEach(entries, id: \.id) { entry in
                     EntryCard(
                         entry: entry,
-                        card: card, setName: setName
+                        card: card, setName: setName, cardViewModel: CardViewModel, subscriptionViewModel: subscriptionViewModel
                     )
                 }
             }
@@ -67,7 +67,7 @@ struct CardDiaryView: View {
                         
                     // Botón para agregar una nueva entrada
                     Button(action: {
-                        if totalEntries <= subscriptionViewModel.entriesLimit || subscriptionViewModel.hasLifetimePurchase{
+                        if totalEntries < subscriptionViewModel.entriesLimit || subscriptionViewModel.hasLifetimePurchase{
                             isShowingAddEntrySheet = true
                         } else {
                             showPayWall = true
@@ -76,9 +76,9 @@ struct CardDiaryView: View {
                         Image(systemName: "plus.circle.fill")
                             .resizable()
                             .scaledToFit()
-                            .foregroundStyle(.red)
+                            .foregroundStyle(.blue)
                     }
-                }
+                }.frame(maxHeight: 35)
             }
         }
         .fullScreenCover(isPresented: $isShowingAddEntrySheet) {
@@ -99,6 +99,8 @@ struct EntryCard: View {
     let card: Card
     let setName: String
     @Environment(\.colorScheme) var colorScheme
+    @StateObject var cardViewModel: CardViewModel
+    @StateObject var subscriptionViewModel: SubscriptionViewModel
     @State private var animateImages: Bool = false
     @State private var showDeleteAlert: Bool = false
     @State private var showImagesSheet: Bool = false
@@ -156,6 +158,12 @@ struct EntryCard: View {
                 Spacer()
                 Menu {
                     
+                    NavigationLink(destination: CardDiaryView(card: card, setName: "", setId: card.set_name, viewModel: cardViewModel, subscriptionViewModel: subscriptionViewModel)) {
+                        
+                        Label("View Card", systemImage: "book")
+                        
+                    }
+                    
                         Button(action: {
                             isShowingEditEntrySheet = true
                         }) {
@@ -167,12 +175,14 @@ struct EntryCard: View {
                     }) {
                         Label("Delete", systemImage: "trash")
                     }
+                    
+                    
                     // Función para compartir la imagen renderizada
                     ShareLink("Share", item: renderImageVm.renderedImage, preview: SharePreview(Text("\(card.name)"), image: renderImageVm.renderedImage))
                         .font(.headline)
                         .bold()
                 } label: {
-                    Image(systemName: "ellipsis")
+                    Image(systemName: "ellipsis").bold()
                         .foregroundColor(.gray)
                         .padding(8)
                 }
@@ -281,13 +291,16 @@ struct ImageGridView: View {
         VStack(alignment: .center, spacing: 0) {
             // Imagen principal grande
             if let selectedImage = selectedImage {
-                Image(uiImage: selectedImage)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(maxHeight: 450)
-                    .cornerRadius(10)
-                    .shadow(radius: 6)
+                HStack{
+                    Image(uiImage: selectedImage)
+                        .resizable()
+                        .scaledToFill()
+                        
+            }.frame(maxHeight: 450)
+                    .cornerRadius(15)
+                    .shadow(radius: 8)
             }
+            
             
             // Lista de miniaturas abajo
             ScrollView(.horizontal, showsIndicators: false) {
@@ -299,8 +312,9 @@ struct ImageGridView: View {
                                 .scaledToFill()
                                 .frame(width: 100, height: 100)
                                 .clipped() // Evita que las imágenes se salgan del marco
-                                .cornerRadius(10)
-                                .shadow(radius: 4)
+                                .cornerRadius(15)
+                                .shadow(radius: 6)
+                                .padding(4)
                                 .onTapGesture {
                                     selectedImage = uiImage // Establece la imagen seleccionada
                                 }
@@ -308,11 +322,11 @@ struct ImageGridView: View {
                     }
                 }
                 .frame(maxWidth: .infinity)
-                .frame(height: 100)
-                .padding()
+                .padding(.horizontal, 30) // Reduce el espacio entre el ScrollView y la Image principal
             }
             Spacer()
         }
+        .background(Color(UIColor.systemGroupedBackground))
         .onAppear(perform: {
             if let data = images.first?.image, let uiImage = UIImage(data: data) {
                 selectedImage = uiImage

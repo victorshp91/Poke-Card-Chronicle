@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct InfoView: View {
-    @ObservedObject var subscriptionViewModel: SubscriptionViewModel
+    @StateObject var subscriptionViewModel: SubscriptionViewModel
     @State var showPayWall: Bool = false
     @State var showSupport: Bool = false
     @State var showPrivacy: Bool = false
@@ -57,7 +57,7 @@ struct InfoView: View {
                                 
                                 
                                
-                                Text("Unlimited Pokémon Diary Entries")
+                                Text("Unlimited Pokémon Collections & Diary Entries")
                                     .font(.subheadline)
                                 
                             }
@@ -80,7 +80,7 @@ struct InfoView: View {
                                     
                                     
                                     
-                                    Text("Unlimited diary entries across all cards. Free version allows only \(subscriptionViewModel.entriesLimit) entries across all cards.").foregroundStyle(.secondary).font(.footnote)
+                                    Text("Unlimited diary entries & collections across all cards. Free version allows only \(subscriptionViewModel.entriesLimit) entries & \(subscriptionViewModel.collectionsLimit) collections across all cards.").foregroundStyle(.secondary).font(.footnote)
                                 }
                                 Spacer()
                                 Image("subscription")

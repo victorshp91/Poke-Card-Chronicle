@@ -14,13 +14,29 @@
 
   ],
   "products" : [
-
+    {
+      "displayPrice" : "29.99",
+      "familyShareable" : false,
+      "internalID" : "6739746827",
+      "localizations" : [
+        {
+          "description" : "On-Time Payment For Lifetime",
+          "displayName" : "Lifetime Subscription",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "diaryLifetime",
+      "referenceName" : "diaryLifetime",
+      "type" : "NonConsumable"
+    }
   ],
   "settings" : {
     "_applicationInternalID" : "6739556605",
     "_developerTeamID" : "8SB327NDUL",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 756615063.91928804,
+    "_lastSynchronizedDate" : 756855168.12595499,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
     "_storeKitErrors" : [
       {
         "current" : null,

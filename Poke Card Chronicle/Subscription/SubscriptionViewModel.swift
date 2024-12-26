@@ -4,6 +4,7 @@ import SwiftUI
 class SubscriptionViewModel: ObservableObject {
     @Published var hasLifetimePurchase: Bool = false
     let entriesLimit = 10  // Limit for the number of entries
+    let collectionsLimit = 3 // Limit for the number of collections
 
     init() {
         checkSubscription()
@@ -25,7 +26,7 @@ class SubscriptionViewModel: ObservableObject {
                         await transaction.finish()
                         DispatchQueue.main.async {
                             self.hasLifetimePurchase = true
-                            self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
+                            self.savePurchaseToPhp(price: transaction.price?.description ?? "0.0")
                         }
                     case .unverified(_, let error):
                         print("Unverified transaction: \(error.localizedDescription)")
@@ -63,7 +64,7 @@ class SubscriptionViewModel: ObservableObject {
                     if transaction.productID == "diaryLifetime" {
                         DispatchQueue.main.async {
                             self.hasLifetimePurchase = true
-                            self.savePurchasesPhp(price: transaction.price?.description ?? "0.0")
+                            self.savePurchaseToPhp(price: transaction.price?.description ?? "0.0")
                         }
                         await transaction.finish()
                     }
@@ -85,8 +86,8 @@ class SubscriptionViewModel: ObservableObject {
         }
     }
 
-    private func savePurchasesPhp(price: String) {
-        guard let url = URL(string: "https://rayjewelry.us/pokeDiary/guardar_compra.php") else { return }
+    private func savePurchaseToPhp(price: String) {
+        guard let url = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/guardar_compra.php") else { return }
 
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         urlComponents?.queryItems = [
@@ -101,7 +102,11 @@ class SubscriptionViewModel: ObservableObject {
         URLSession.shared.dataTask(with: request) { _, _, error in
             if let error = error {
                 DispatchQueue.main.async {
-                    print("Error in savePurchasesPhp: \(error)")
+                    print("Error in savePurchaseToPhp: \(error.localizedDescription)")
+                }
+            } else {
+                DispatchQueue.main.async {
+                    print("Purchase saved successfully via PHP endpoint.")
                 }
             }
         }.resume()

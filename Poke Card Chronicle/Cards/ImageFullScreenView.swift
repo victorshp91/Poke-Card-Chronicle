@@ -13,6 +13,8 @@ struct ImageFullScreenView: View {
     @State var animateImage = false
     @StateObject var cardViewModel: CardViewModel
     
+    @State private var timer: Timer?
+    
     var body: some View {
         VStack {
             ZStack(alignment: .topTrailing) {
@@ -27,7 +29,8 @@ struct ImageFullScreenView: View {
                     .padding()
                     .scaleEffect(animateImage ? 1 : 0.9, anchor: .center) // Escala desde el centro
                     .animation(
-                        Animation.easeInOut(duration: 0.3),
+                        Animation.easeInOut(duration: 0.3)
+                        .repeatForever(autoreverses: true),
                         value: animateImage
                     )
                 }placeholder: {
@@ -40,57 +43,72 @@ struct ImageFullScreenView: View {
                         .padding()
                         .scaleEffect(animateImage ? 1 : 0.9, anchor: .center) // Escala desde el centro
                         .animation(
-                            Animation.easeInOut(duration: 0.3),
+                            Animation.easeInOut(duration: 0.3)
+                            .repeatForever(autoreverses: true),
                             value: animateImage
                         )
                 }
                 
                 VStack{
                     
-                  
-                    
-                    
-                    
                     Button(action: {
-                        
-                        
                         showFullImage = false
-                        
-                        
                     }) {
-                        
                         HStack{
                             Image(systemName: "x.circle.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .tint(.secondary)
-                            
                         }
                         .padding(5)
                         .background(.ultraThinMaterial)
                         .cornerRadius(15)
                         .frame(maxWidth: 45)
                         .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
-                       
+                    }
+                    HStack{
+                        FavoriteButton(cardId: cardViewModel.cardFullScreen.id, viewModel: cardViewModel)
+                    }
+                        .padding(5)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(15)
+                        .frame(maxWidth: 45)
+                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
+                    HStack{
                         
+                        AddCardToCollectionButton(viewModel: cardViewModel, cardId: cardViewModel.cardFullScreen.id)
+                    }
+                        .padding(5)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(15)
+                        .frame(maxWidth: 45)
+                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
+                    
+                    Button(action: {
+                        // Start a timer to reset the animation every second
+                        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+                            withAnimation {
+                                animateImage = !animateImage
+                            }
+                        }
+                        
+                        
+                       
+                    }) {
+                        HStack{
+                            Image(systemName: "wave.3.right")
+                                .resizable()
+                                .scaledToFit()
+                                .tint(.secondary)
+                        }
+                        .padding(5)
+                        .background(.ultraThinMaterial)
+                        .cornerRadius(15)
+                        .frame(minWidth: 45, maxHeight: 45)
+                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
                     }
                     
-                    FavoriteButton(cardId: cardViewModel.cardFullScreen.id, viewModel: cardViewModel)
-                        .padding(5)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(15)
-                        .frame(maxWidth: 45)
-                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
-                    
-                    AddCardToCollectionButton( viewModel: cardViewModel, cardId: cardViewModel.cardFullScreen.id)
-                        .padding(5)
-                        .background(.ultraThinMaterial)
-                        .cornerRadius(15)
-                        .frame(maxWidth: 45)
-                        .shadow(color: .black.opacity(0.15), radius: 15, x: 0, y: 10)
-                    
-                }.padding(.trailing, 5)
-                
+                }.padding(.trailing, 10)
                 
             }
         }
@@ -101,6 +119,10 @@ struct ImageFullScreenView: View {
             withAnimation {
                 animateImage = true
             }
+            
+        }
+        .onDisappear {
+            timer?.invalidate()
         }
         .navigationBarHidden(true) // Ocultar la barra de navegación
     }

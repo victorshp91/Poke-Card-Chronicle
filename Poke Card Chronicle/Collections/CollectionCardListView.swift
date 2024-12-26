@@ -14,10 +14,12 @@ struct CollectionCardListView: View {
     }
 
     @State private var selectedSortOption: SortOption = .dateDescending
-
+    @State private var showCollectionDescription: Bool = false
+    @State private var showEditCollection: Bool = false
     let collection: Collections
     @StateObject var viewModel: CardViewModel
     @StateObject var subscriptionViewModel: SubscriptionViewModel
+    
 
     // Combina los datos de `collectionToCards` con las cartas completas
     func cardsForCollection() -> [(Card, Date?)] {
@@ -85,9 +87,50 @@ struct CollectionCardListView: View {
                         .font(.headline)
                         .foregroundColor(.gray)
                 )
-                .navigationTitle(collection.name ?? "Unnamed Collection")
+                .navigationTitle(collection.name?.capitalized ?? "Unnamed Collection")
                 .navigationBarTitleDisplayMode(.inline)
                 .frame(maxWidth: .infinity)
+                .navigationBarItems(
+                    trailing:
+                        
+                        Menu {
+                            
+                            ShareCollectionButton(cardIds: cardsForCollection().map { $0.0.id }, title: "\(collection.name?.capitalized ?? "Unnamed Collection")", description: "\(collection.about ?? "No description")")
+                            
+                            Button(action: {
+                                showEditCollection = true
+                            }){
+                                Label("Edit", systemImage: "square.and.pencil.circle")
+
+                               
+                            }
+                            
+                            Button(action: {
+                                showDeleteAlert = true
+                            }) {
+                                Label("Delete", systemImage: "trash.circle")
+                                
+                            }
+                            
+                            Button(action: {
+                                showCollectionDescription = true
+                            }){
+                                Label("About", systemImage: "info.circle")
+                                
+                            }
+                            
+                            
+                        } label: {
+                            Image(systemName: "ellipsis.circle.fill").bold()
+                                .foregroundColor(.red)
+                                .padding(8)
+                        }
+                        
+                        
+                        
+                        
+                        
+                )
             }
             .overlay(
                 HStack(spacing: 10) {
@@ -135,13 +178,39 @@ struct CollectionCardListView: View {
                 ImageFullScreenView(showFullImage: $showImageFullScreen, cardViewModel: viewModel)
             }
         }
-        .navigationBarItems(
-            trailing: Button(action: {
-                showDeleteAlert = true
-            }) {
-                Image(systemName: "trash.fill")
-            }
-        )
+        .sheet(isPresented: $showEditCollection) {
+            
+            CreateCollectionView(cardViewModel: viewModel, collectionToEdit: collection)
+            
+        }
+        .sheet(isPresented: $showCollectionDescription) {
+            ScrollView(.vertical) {
+                HStack{
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text("About \(collection.name ?? "No Name") Collection")
+                            .font(.headline)
+                        
+                        
+                        Text(collection.about ?? "No description")
+                            .font(.body)
+                            .foregroundColor(.gray)
+                            .multilineTextAlignment(.leading)
+                        
+                        
+                        Spacer()
+                    }
+                    Spacer()
+                }.padding()
+            }.frame(maxWidth: .infinity)
+            
+            .presentationDetents([.height(250)])
+            
+                
+            
+            
+           
+        }
+        
         .alert(isPresented: $showDeleteAlert) {
             Alert(
                 title: Text("Delete Collection"),

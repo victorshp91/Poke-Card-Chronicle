@@ -26,13 +26,26 @@ struct CollectionsGridView: View {
     @StateObject var cardViewModel: CardViewModel
     @StateObject var subscriptionViewModel: SubscriptionViewModel
     @State var showAddCollectionSheet: Bool = false
+    @State private var showPayWall = false // Controla la presentación del Paywall
+
     var body: some View {
         
             ScrollView {
+                if !subscriptionViewModel.hasLifetimePurchase {
+                    SubscriptionPromptView(description: "Only \(max(0, subscriptionViewModel.collectionsLimit - cardViewModel.collections.count)) Collections left in the free version.", subscriptionViewModel: subscriptionViewModel)
+                    
+                }
                 LazyVGrid(columns: columns, spacing: 16) {
                     // Add new collection button
                     Button(action: {
-                        showAddCollectionSheet = true
+                       
+                        
+                        if cardViewModel.collections.count < subscriptionViewModel.collectionsLimit || subscriptionViewModel.hasLifetimePurchase{
+                            showAddCollectionSheet = true
+                        } else {
+                            showPayWall = true
+                        }
+                        
                     }) {
                         VStack {
                             Image(systemName: "plus")
@@ -58,12 +71,19 @@ struct CollectionsGridView: View {
                             .prefix(3) // Limita los resultados a las primeras tres cartas
                             .compactMap { $0.cardId }) // Mapea cada carta a su `cardId`, filtrando posibles valores nil
                             .offset(x: cardViewModel.favorites.isEmpty || cardViewModel.favorites.count == 1 ? 0 : -15)
-                            Text("Favorites")
-                                .foregroundColor(.primary)
-                                .font(.headline)
-                                .multilineTextAlignment(.center)
+                            
+                            VStack{
+                                Text("Favorites")
+                                    .foregroundColor(.primary)
+                                    .font(.headline)
+                                    .multilineTextAlignment(.center)
+                                
+                                Text("\(cardViewModel.favorites.count) Cards")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
                         }
-                        .padding(.vertical)
+                        .padding()
                         .frame(maxWidth: .infinity, minHeight: 175)
                         .background(.ultraThinMaterial)
                         .cornerRadius(10)
@@ -86,22 +106,32 @@ struct CollectionsGridView: View {
                                 
                                 AccordionPokemonCardsView(cardsId: cards)
                                     .offset(x: cards.isEmpty || cards.count == 1 ? 0 : -15)
-                                
-                                Text(collection.name ?? "Unnamed")
-                                    .foregroundColor(.primary)
-                                    .font(.headline)
-                                    .multilineTextAlignment(.center)
+                                VStack{
+                                    Text(collection.name ?? "Unnamed")
+                                        .foregroundColor(.primary)
+                                        .font(.headline)
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail) // Corta al final con puntos suspensivos
+                                        
+                                    
+                                    Text("\(cardViewModel.countCards(in: collection)) Cards")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
                             }
-                            
+                            .padding()
                             .frame(maxWidth: .infinity, minHeight: 175)
                             .background(.ultraThinMaterial)
                             .cornerRadius(10)
-                            .padding(.vertical, 10)
+                            
                         }
                     }
                 }
                 .padding()
                 .padding(.bottom, 75)
+            }.fullScreenCover(isPresented: $showPayWall) {
+                PaywallView(subscriptionViewModel: subscriptionViewModel)
             }
             .navigationTitle("COLLECTIONS")
             .navigationBarTitleDisplayMode(.inline)

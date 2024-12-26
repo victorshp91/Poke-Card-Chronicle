@@ -50,6 +50,9 @@
             ReferencedContainer = "container:Poke Card Chronicle.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <StoreKitConfigurationFileReference
+         identifier = "../../Poke&#x301; Cards - Diary Journal.storekit">
+      </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

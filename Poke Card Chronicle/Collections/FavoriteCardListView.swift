@@ -21,8 +21,10 @@ struct FavoriteCardListView: View {
 
     @State private var selectedSortOption: SortOption = .dateDescending
     @State private var isTopBarPresented: Bool = true
+    
     @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \Favorites.date, ascending: false)])
     private var favorites: FetchedResults<Favorites>
+    
     @StateObject var viewModel: CardViewModel
     @StateObject var subscriptionViewModel: SubscriptionViewModel
     
@@ -91,7 +93,17 @@ struct FavoriteCardListView: View {
                         Text("\(favorites.count)")
                         .font(.headline)
                         .foregroundColor(.gray),
-                    trailing: Image(systemName: "heart.fill").foregroundStyle(.red)
+                    trailing:
+                        HStack {
+                            Image(systemName: "heart.fill").foregroundStyle(.red)
+                            
+                            
+                           
+                            if !viewModel.favorites.isEmpty {
+                                let cardIds = viewModel.favorites.map { $0.cardId! }
+                                ShareCollectionButton(cardIds: cardIds, title: "My Favorite Cards", description: "Here are all my favorite cards")
+                            }
+                        }
                 )
                 .navigationTitle("FAVORITE CARDS")
                 .navigationBarTitleDisplayMode(.inline)
