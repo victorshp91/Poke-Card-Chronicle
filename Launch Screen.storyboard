@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23094" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23084"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -22,19 +22,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logoScreen" translatesAutoresizingMaskIntoConstraints="NO" id="KHW-eh-AGk">
-                                <rect key="frame" x="-7" y="264" width="400" height="324"/>
+                                <rect key="frame" x="62" y="310" width="269" height="232"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="0.92941176889999999" green="0.93333333730000001" blue="0.94901967050000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstItem="Bcu-3y-fUS" firstAttribute="centerX" secondItem="obG-Y5-kRd" secondAttribute="centerX" id="5cz-MP-9tL"/>
-                            <constraint firstItem="KHW-eh-AGk" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="205" id="M9N-z4-0U6"/>
-                            <constraint firstItem="obG-Y5-kRd" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" constant="20" symbolic="YES" id="SfN-ll-jLj"/>
-                            <constraint firstAttribute="bottom" secondItem="obG-Y5-kRd" secondAttribute="bottom" constant="20" id="Y44-ml-fuU"/>
-                            <constraint firstItem="KHW-eh-AGk" firstAttribute="trailing" secondItem="obG-Y5-kRd" secondAttribute="trailing" id="fo4-SF-hXj"/>
-                            <constraint firstItem="KHW-eh-AGk" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" constant="-23" id="l8V-nc-AYL"/>
-                            <constraint firstItem="KHW-eh-AGk" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="rw3-vy-SfH"/>
+                            <constraint firstItem="KHW-eh-AGk" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="8ih-sF-y3b"/>
+                            <constraint firstItem="KHW-eh-AGk" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="251" id="AVQ-RF-3Zn"/>
+                            <constraint firstAttribute="trailing" secondItem="obG-Y5-kRd" secondAttribute="trailing" id="CQb-jC-eYh"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="obG-Y5-kRd" secondAttribute="bottom" constant="-14" id="O4o-jc-6sy"/>
+                            <constraint firstItem="KHW-eh-AGk" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" constant="62" id="i0G-xg-tYJ"/>
+                            <constraint firstItem="obG-Y5-kRd" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="rzK-y5-kqB"/>
+                            <constraint firstItem="KHW-eh-AGk" firstAttribute="centerX" secondItem="obG-Y5-kRd" secondAttribute="centerX" id="zvE-Gf-GCW"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -44,6 +44,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logoScreen" width="1024" height="1024"/>
+        <image name="logoScreen" width="500" height="500"/>
     </resources>
 </document>

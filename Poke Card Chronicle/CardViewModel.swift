@@ -101,14 +101,68 @@ class CardViewModel: ObservableObject {
     
     
     func deleteCollectionAndCards(collection: Collections) {
+        // Primero, elimina las cartas asociadas a la colección
         if let cards = collection.collectionToCards?.allObjects as? [CardsForCollection] {
             for card in cards {
                 PersistenceController.shared.container.viewContext.delete(card)
             }
         }
+        
+        // Eliminar la colección de Core Data
         PersistenceController.shared.container.viewContext.delete(collection)
+        
+        // Llamar a la función para eliminar la colección en la base de datos PHP
+        if let shareId = collection.shareId {
+            deleteCollectionFromServer(shareId: shareId)
+        }
+        
+        // Actualizar la vista
         fetchCollections()
+        
+        // Guardar cambios en Core Data
         try? PersistenceController.shared.container.viewContext.save()
+    }
+
+    // Nueva función para eliminar la colección en el servidor
+    private func deleteCollectionFromServer(shareId: String) {
+        let baseUrl = "https://pokediaryapp.com.rayjewelry.us/api/collection.php"
+        
+        var urlComponents = URLComponents(string: baseUrl)
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "id", value: shareId),
+            URLQueryItem(name: "action", value: "delete"), // Asegúrate de que tu API soporte esta acción
+            URLQueryItem(name: "format", value: "json")
+        ]
+        
+        guard let url = urlComponents?.url else { return }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST" // Cambiar a POST si es necesario para la eliminación
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("Error en la solicitud HTTP:", error)
+                return
+            }
+            
+            guard let data = data else {
+                print("No se recibieron datos")
+                return
+            }
+            
+            do {
+                let response = try JSONDecoder().decode(DeleteResponse.self, from: data)
+                print("Respuesta del servidor al eliminar la colección:", response.message)
+            } catch {
+                print("Error decodificando respuesta:", error)
+                print("Datos recibidos:", String(data: data, encoding: .utf8) ?? "No se pueden mostrar los datos")
+            }
+        }.resume()
+    }
+    
+    struct DeleteResponse: Codable {
+        let success: Bool
+        let message: String
     }
 
     func addCardToCollection(cardId: String, collection: Collections) {

@@ -95,7 +95,7 @@ struct CollectionCardListView: View {
                         
                         Menu {
                             
-                            ShareCollectionButton(cardIds: cardsForCollection().map { $0.0.id }, title: "\(collection.name?.capitalized ?? "Unnamed Collection")", description: "\(collection.about ?? "No description")")
+                            ShareCollectionButton(cardIds: cardsForCollection().map { $0.0.id }, collection: collection)
                             
                             Button(action: {
                                 showEditCollection = true
