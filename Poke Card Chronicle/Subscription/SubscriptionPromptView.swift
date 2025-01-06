@@ -53,7 +53,7 @@ struct SubscriptionPromptView: View {
         .cornerRadius(10)
         .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
         .padding(.horizontal)
-        .sheet(isPresented: $showSheet) {
+        .fullScreenCover(isPresented: $showSheet) {
             PaywallView(subscriptionViewModel: subscriptionViewModel)
         }
     }

@@ -15,14 +15,17 @@ struct Card: Identifiable, Decodable, Hashable {
     let name: String
     let small_image_url: String
     let large_image_url: String
-    let set_name: String
+    let set_id: String
+    let release_date: String
 
-    init(id: String = "" , name: String = "", small_image_url: String = "", large_image_url: String = " ", set_name: String = "") {
+    init(id: String = "" , name: String = "", small_image_url: String = "", large_image_url: String = " ", set_id: String = "", release_date: String = "") {
         self.id = id
         self.name = name
         self.small_image_url = small_image_url
         self.large_image_url = large_image_url
-        self.set_name = set_name
+        self.set_id = set_id
+        self.release_date = release_date
+        
     }
 }
 
@@ -55,8 +58,8 @@ struct CardListView: View {
                             ForEach(filteredCards) { card in
                                 NavigationLink(destination: CardDiaryView(
                                     card: card,
-                                    setName: setName(from: viewModel.sets, for: card.set_name),
-                                    setId: card.set_name,
+                                    setName: setName(from: viewModel.sets, for: card.set_id),
+                                    setId: card.set_id,
                                     viewModel: viewModel,
                                     subscriptionViewModel: subscriptionViewModel
                                 )) {
@@ -143,7 +146,7 @@ struct CardListView: View {
                     .scaledToFit()
                     .frame(maxHeight: 50)
             } else {
-                Image("logo")
+                Image("logoScreen")
                     .resizable()
                     .scaledToFit()
                     .frame(maxHeight: 50)
@@ -151,6 +154,7 @@ struct CardListView: View {
         }
         .padding(10)
         .frame(height: 75)
+        .frame(maxWidth: isTopBarPresented ? .infinity:150)
         .background(.ultraThinMaterial)
         .cornerRadius(15)
         .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 5)
@@ -160,7 +164,7 @@ struct CardListView: View {
     private func applyFilters() {
         let diaryEntriesSet = fetchAllDiaryEntriesIDs()
         filteredCards = viewModel.cards.filter { card in
-            let matchesSet = selectedSet == nil || card.set_name == selectedSet!.id
+            let matchesSet = selectedSet == nil || card.set_id == selectedSet!.id
             let matchesSearch = searchText.isEmpty || card.name.localizedCaseInsensitiveContains(searchText)
             let hasDiaryEntry = diaryEntriesSet.contains(card.id)
             return matchesSet && matchesSearch && (!showOnlyDiaryEntries || hasDiaryEntry)

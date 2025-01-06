@@ -24,8 +24,8 @@ class CardViewModel: ObservableObject {
     
 
     // MARK: - URLs
-    private let cardsJsonURL = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/pokemon_cards.json")!
-    private let setsJsonURL = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/pokemon_set.json")!
+    private let cardsJsonURL = URL(string: "https://pokediaryapp.com/api/pokemon_cards.json")!
+    private let setsJsonURL = URL(string: "https://pokediaryapp.com/api/pokemon_set.json")!
 
     @Environment(\.colorScheme) var colorScheme
 
@@ -125,7 +125,7 @@ class CardViewModel: ObservableObject {
 
     // Nueva función para eliminar la colección en el servidor
     private func deleteCollectionFromServer(shareId: String) {
-        let baseUrl = "https://pokediaryapp.com.rayjewelry.us/api/collection.php"
+        let baseUrl = "https://pokediaryapp.com/api/collection.php"
         
         var urlComponents = URLComponents(string: baseUrl)
         urlComponents?.queryItems = [

@@ -126,7 +126,7 @@ struct InfoView: View {
                             
                         }
                         Spacer()
-                        Image("logo")
+                        Image("logoScreen")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 40, height: 40)
@@ -167,7 +167,7 @@ struct InfoView: View {
             }
             .navigationBarItems(
                 
-                trailing: Image("logo")
+                trailing: Image("logoScreen")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 30, height: 30)

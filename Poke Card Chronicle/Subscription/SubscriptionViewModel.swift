@@ -87,7 +87,7 @@ class SubscriptionViewModel: ObservableObject {
     }
 
     private func savePurchaseToPhp(price: String) {
-        guard let url = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/guardar_compra.php") else { return }
+        guard let url = URL(string: "https://pokediaryapp.com/api/guardar_compra.php") else { return }
 
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
         urlComponents?.queryItems = [

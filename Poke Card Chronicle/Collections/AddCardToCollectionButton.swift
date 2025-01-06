@@ -13,10 +13,16 @@ struct AddCardToCollectionButton: View {
             showMenu.toggle()
         }) {
             ZStack(alignment: .topTrailing) {
-                Image(systemName: viewModel.isCardInAnyCollection(cardId: cardId) ? "tray.full" : "tray")
-                    .resizable()
-                    .scaledToFit()
-                    .tint(.secondary)
+               
+                    Image(systemName: "tray")
+                        .resizable()
+                        .scaledToFit()
+                        .tint(.secondary)
+                    
+                
+               
+                
+                    
                     
                 
                 if viewModel.countCollectionsContainingCard(cardId: cardId) > 0 {

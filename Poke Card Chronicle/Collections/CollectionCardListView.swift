@@ -60,8 +60,8 @@ struct CollectionCardListView: View {
                                 NavigationLink(
                                     destination: CardDiaryView(
                                         card: card,
-                                        setName: setName(from: viewModel.sets, for: card.set_name),
-                                        setId: card.set_name,
+                                        setName: setName(from: viewModel.sets, for: card.set_id),
+                                        setId: card.set_id,
                                         viewModel: viewModel,
                                         subscriptionViewModel: subscriptionViewModel
                                     )

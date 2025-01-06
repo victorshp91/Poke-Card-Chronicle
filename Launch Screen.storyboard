@@ -15,15 +15,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="obG-Y5-kRd">
-                                <rect key="frame" x="0.0" y="832" width="393" height="0.0"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logoScreen" translatesAutoresizingMaskIntoConstraints="NO" id="KHW-eh-AGk">
+                                <rect key="frame" x="62" y="310" width="269" height="232"/>
+                            </imageView>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="POKÉ CARDS - DIARY JOURNAL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="obG-Y5-kRd">
+                                <rect key="frame" x="0.0" y="521" width="393" height="20.333333333333371"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logoScreen" translatesAutoresizingMaskIntoConstraints="NO" id="KHW-eh-AGk">
-                                <rect key="frame" x="62" y="310" width="269" height="232"/>
-                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="0.92941176889999999" green="0.93333333730000001" blue="0.94901967050000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -31,7 +31,7 @@
                             <constraint firstItem="KHW-eh-AGk" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="8ih-sF-y3b"/>
                             <constraint firstItem="KHW-eh-AGk" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="251" id="AVQ-RF-3Zn"/>
                             <constraint firstAttribute="trailing" secondItem="obG-Y5-kRd" secondAttribute="trailing" id="CQb-jC-eYh"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="obG-Y5-kRd" secondAttribute="bottom" constant="-14" id="O4o-jc-6sy"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="obG-Y5-kRd" secondAttribute="bottom" constant="276.66666666666663" id="O4o-jc-6sy"/>
                             <constraint firstItem="KHW-eh-AGk" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" constant="62" id="i0G-xg-tYJ"/>
                             <constraint firstItem="obG-Y5-kRd" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="rzK-y5-kqB"/>
                             <constraint firstItem="KHW-eh-AGk" firstAttribute="centerX" secondItem="obG-Y5-kRd" secondAttribute="centerX" id="zvE-Gf-GCW"/>
@@ -44,6 +44,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="logoScreen" width="500" height="500"/>
+        <image name="logoScreen" width="1300" height="1329"/>
     </resources>
 </document>

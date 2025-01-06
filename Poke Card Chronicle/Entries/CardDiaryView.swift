@@ -158,7 +158,7 @@ struct EntryCard: View {
                 Spacer()
                 Menu {
                     
-                    NavigationLink(destination: CardDiaryView(card: card, setName: "", setId: card.set_name, viewModel: cardViewModel, subscriptionViewModel: subscriptionViewModel)) {
+                    NavigationLink(destination: CardDiaryView(card: card, setName: "", setId: card.set_id, viewModel: cardViewModel, subscriptionViewModel: subscriptionViewModel)) {
                         
                         Label("View Card", systemImage: "book")
                         
@@ -219,7 +219,7 @@ struct EntryCard: View {
         }
         .onAppear(perform: {
             // Descarga de la imagen asociada a la carta y la entrada
-            renderImageVm.downloadImage(cardImageUrl: card.large_image_url, card: card, diaryEntry: entry, setImageUrl: getSetLogoURL(for: card.set_name)?.absoluteString ?? "")
+            renderImageVm.downloadImage(cardImageUrl: card.large_image_url, card: card, diaryEntry: entry, setImageUrl: getSetLogoURL(for: card.set_id)?.absoluteString ?? "")
         })
 
         // Mostrar imágenes en un sheet
@@ -339,7 +339,7 @@ struct ImageGridView: View {
 
 
 #Preview {
-    CardDiaryView(card: Card(id: "1", name: "PIKACHU", small_image_url: "", large_image_url: "https://images.pokemontcg.io/sm1/5_hires.png", set_name: "Base Set"), setName: "150 mabajeo", setId: "pop3", viewModel: CardViewModel(), subscriptionViewModel: SubscriptionViewModel())
+    CardDiaryView(card: Card(id: "1", name: "PIKACHU", small_image_url: "", large_image_url: "https://images.pokemontcg.io/sm1/5_hires.png", set_id: "Base Set"), setName: "150 mabajeo", setId: "pop3", viewModel: CardViewModel(), subscriptionViewModel: SubscriptionViewModel())
 }
 
 

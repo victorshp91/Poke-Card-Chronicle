@@ -222,7 +222,7 @@ struct CardEntryView: View {
 
 struct CardEntryView_Previews: PreviewProvider {
     static var previews: some View {
-        CardEntryView(card: Card(id: "1", name: "dasd", small_image_url: "", large_image_url: "", set_name: "Dasda"), setName: "150")
+        CardEntryView(card: Card(id: "1", name: "dasd", small_image_url: "", large_image_url: "", set_id: "Dasda"), setName: "150")
     }
 }
 

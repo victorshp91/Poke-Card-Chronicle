@@ -34,7 +34,7 @@ struct AllEntriesView: View {
                                 EntryCard(
                                     entry: entry,
                                     card: matchingCard,
-                                    setName: setName(from: viewModel.sets, for: matchingCard.set_name),
+                                    setName: setName(from: viewModel.sets, for: matchingCard.set_id),
                                     cardViewModel: viewModel,
                                     subscriptionViewModel: subscriptionViewModel
                                     

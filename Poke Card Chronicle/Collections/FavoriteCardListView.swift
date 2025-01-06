@@ -67,7 +67,7 @@ struct FavoriteCardListView: View {
                             ForEach(sortFavorites(Array(favorites), cards: viewModel.cards), id: \.self) { favorite in
                                 
                                 if let card = viewModel.cards.first(where: { $0.id == favorite.cardId }) {
-                                    NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets, for: card.set_name), setId: card.set_name, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
+                                    NavigationLink(destination: CardDiaryView(card: card, setName: setName(from: viewModel.sets, for: card.set_id), setId: card.set_id, viewModel: viewModel, subscriptionViewModel: subscriptionViewModel)) {
                                         VStack{
                                             CardView(card: card, showImageFullScreen: $showImageFullScreen, cardViewModel: viewModel)
                                               //  .padding(.vertical, 5)

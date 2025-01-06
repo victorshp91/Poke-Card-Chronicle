@@ -10,7 +10,7 @@ struct ShareCollectionButton: View {
         Button(action: {
             sharePage()
         }){
-            Label("Share", systemImage: "square.and.arrow.up")
+            Label("Share \(collection?.shareId ?? "")", systemImage: "square.and.arrow.up")
         }
         .onAppear {
             shareId = collection?.shareId
@@ -19,15 +19,20 @@ struct ShareCollectionButton: View {
     }
     
     func sharePage() {
+        if cardIds.isEmpty {
+            presentAlert(message: "Cannot share because there are no cards in the collection.")
+            return
+        }
+        
         if let existingShareId = collection?.shareId {
-            print("Usando shareId existente:", existingShareId)
+            print("Using existing shareId:", existingShareId)
             updateShareData(existingShareId)
             return
         }
         
-        print("Creando nuevo shareId...")
+        print("Creating new shareId...")
         
-        let baseUrl = "https://pokediaryapp.com.rayjewelry.us/api/collection.php"
+        let baseUrl = "https://pokediaryapp.com/api/collection.php"
         let idsString = cardIds.joined(separator: ",")
         
         var urlComponents = URLComponents(string: baseUrl)
@@ -74,7 +79,7 @@ struct ShareCollectionButton: View {
     
     private func updateShareData(_ shareId: String) {
         print("Actualizando colección con shareId:", shareId)
-        let baseUrl = "https://pokediaryapp.com.rayjewelry.us/api/collection.php"
+        let baseUrl = "https://pokediaryapp.com/api/collection.php"
         let idsString = cardIds.joined(separator: ",")
         let title = collection?.name ?? "Unnamed Collection"
         let description = collection?.about ?? "Check out my Pokémon card collection!"
@@ -147,7 +152,7 @@ struct ShareCollectionButton: View {
     }
     
     private func shareWithId(_ shareId: String) {
-        let shareUrl = "https://pokediaryapp.com.rayjewelry.us/api/collection.php?id=\(shareId)"
+        let shareUrl = "https://pokediaryapp.com/api/collection.php?id=\(shareId)"
         guard let url = URL(string: shareUrl) else { return }
         
         let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
@@ -155,6 +160,16 @@ struct ShareCollectionButton: View {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
             window.rootViewController?.present(activityVC, animated: true)
+        }
+    }
+    
+    private func presentAlert(message: String) {
+        let alert = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController?.present(alert, animated: true, completion: nil)
         }
     }
 }

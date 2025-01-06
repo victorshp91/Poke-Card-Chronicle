@@ -61,7 +61,7 @@ struct PrivacyPolicyView: View {
     }
     
     private func loadPolicyData() {
-        guard let url = URL(string: "https://pokediaryapp.com.rayjewelry.us/api/privacy.json") else {
+        guard let url = URL(string: "https://pokediaryapp.com/api/privacy.json") else {
             self.errorMessage = "Invalid URL"
             self.isLoading = false
             return
